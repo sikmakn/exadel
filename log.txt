@@ -1,0 +1,11 @@
+commit b2f29620236620b688f70422944879bc7f19693c
+Author: КолчановНС <sikmakn@gmail.com>
+Date:   Tue Feb 14 11:46:36 2017 +0300
+
+    add status.txt
+
+commit 361a8a08f5bcd8b66c7e3a700ccdfad85701d536
+Author: КолчановНС <sikmakn@gmail.com>
+Date:   Tue Feb 14 11:44:19 2017 +0300
+
+    add .gitignore
