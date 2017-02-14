@@ -1,0 +1,16 @@
+On branch master
+
+Initial commit
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+
+        new file:   task1/.idea/compiler.xml
+        new file:   task1/.idea/copyright/profiles_settings.xml
+        new file:   task1/.idea/misc.xml
+        new file:   task1/.idea/modules.xml
+        new file:   task1/.idea/workspace.xml
+        new file:   task1/task1.iml
+
+On branch master
+nothing to commit, working tree clean
