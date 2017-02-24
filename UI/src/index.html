@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <link href="styles.css" rel="stylesheet">
+    <title>Title</title>
+</head>
+<body>
+<div class="page-wrapper">
+    <header>
+        <h1>Новостной портал: ИНФА Соточка</h1>
+        <p>Дата и время обновления:<time pubdate datatime="2017-02-20 13:18">2017-02-20 13:18</time></p>
+        <button>Добавить новость</button>
+    </header>
+    <div class="user">
+        <p id="titleUser" >Пользователь:</p>
+        <p id="login">Sikmak</p>
+        <button>Выход</button>
+    </div>
+    <aside>
+        <p id="filterTitle">Фильтрация</p>
+        <ul class="menu">
+            <li>
+                <label><input type="checkbox" class="filterMenuCheckbox"> <p class="filterItemName">Дата </p>
+                    <ul class="submenu">
+                        <li>
+                            <input type="text" id="Date Added" class="filterTextArea" placeholder="гггг.мм.дд-гггг.мм.дд" maxlength="21" />
+                        </li>
+                    </ul>
+                </label>
+            </li>
+            <li>
+                <label><input type="checkbox" class="filterMenuCheckbox">  <p class="filterItemName">Имя автора</p>
+                    <ul class="submenu">
+                        <li>
+                            <textarea id="AuthorName" class="filterTextArea" placeholder="Иванов Иван Иванович"></textarea>
+                        </li>
+                    </ul>
+                </label>
+            </li>
+            <li>
+                <label><input type="checkbox" class="filterMenuCheckbox">  <p class="filterItemName">Теги</p><span></span>
+                    <ul class="submenu">
+                        <li>
+                            <textarea id="Tegs" class="filterTextArea" placeholder="#Teg1 #Teg2"></textarea>
+                        </li>
+                    </ul>
+                </label>
+            </li>
+        </ul>
+        <button class="filterFindButton">Поиск</button>
+    </aside>
+<main>
+    <div class="pagination"> <p>Страница:</p> <a href="error.html">1</a> <a href="error.html">2</a></div>
+
+    <div class="textArea">
+        <div class="tegArea">#teg1 </div>
+        <button class="editNewsButton"></button>
+        <button class="deleteNewsButton"></button>
+        <a class="newsArea" href="error.html">
+            <h1 class="newsHeader">Как казахстанцы исполнили мечту бедуина</h1>
+            <p class="newsText">
+                Эта история о приключении казахстанцев,
+                человеческой доброте и о том,
+                как сбылась мечта человека из далекой пустыни на границе Индии с Пакистаном.
+            </p>
+        </a>
+        <div class="authorNews">Author</div>
+        <div class="dateNews"><time pubdate datatime="2017-02-22 14:43">2017-02-22 14:43</time></div>
+    </div>
+    <div class="textArea">
+        <div class="tegArea">#teg2</div>
+        <button class="editNewsButton"></button>
+        <button class="deleteNewsButton"></button>
+        <a class="newsArea" href="error.html">
+
+            <h1 class="newsHeader">Кто имеет право на отсрочку от армии в Казахстане</h1>
+            <p class="newsText">
+                Редакция Tengrinews.kz разъясняет, кто может не отдавать долг родине.
+            </p>
+        </a>
+        <div class="authorNews">Author</div>
+        <div class="dateNews"><time pubdate datatime="2017-02-22 14:43">2017-02-22 14:43</time></div>
+    </div>
+    <div class="textArea">
+        <div class="tegArea">#teg3</div>
+        <button class="editNewsButton"></button>
+        <button class="deleteNewsButton"></button>
+        <a class="newsArea" href="error.html">
+
+            <h1 class="newsHeader">Препарируя любовь. Психологи о главном чувстве</h1>
+            <p class="newsText">
+                14 февраля многие отмечают День влюбленных,
+                и это еще один повод проявить свои чувства к любимым,
+                а также поговорить о чувстве любви - великом даре или великом мифе.
+            </p>
+        </a>
+        <div class="authorNews">Author</div>
+        <div class="dateNews"><time pubdate datatime="2017-02-22 14:43">2017-02-22 14:43</time></div>
+    </div>
+    <div class="textArea">
+        <div class="tegArea">#teg4</div>
+        <button class="editNewsButton"></button>
+        <button class="deleteNewsButton"></button>
+        <a class="newsArea" href="error.html">
+
+            <h1 class="newsHeader">Обсуждение изменений в Конституцию РК подходит к концу - Акорда </h1>
+            <p class="newsText">
+                В Акорде состоялось заседание Рабочей группы по вопросам перераспределения
+                полномочий между ветвями государственной власти.
+            </p>
+        </a>
+        <div class="authorNews">Author</div>
+        <div class="dateNews"><time pubdate datatime="2017-02-22 14:43">2017-02-22 14:43</time></div>
+    </div>
+    <div class="textArea">
+        <div class="tegArea">#teg5</div>
+        <button class="editNewsButton"><!--<img src="./image/redactButton.png" class="editNewsPicture">--></button>
+        <button class="deleteNewsButton"></button>
+        <a class="newsArea" href="error.html">
+            <h1 class="newsHeader">Ақтөбелік дем салушы: Намаз оқитын адамның да ішіне жын кіреді</h1>
+            <p class="newsText">
+                Тұрғын жын кірген адамды қалай анықтауға болатын құпиясымен бөлісті
+            </p>
+        </a>
+        <div class="authorNews">Author</div>
+        <div class="dateNews"><time pubdate datatime="2017-02-22 14:43">2017-02-22 14:43</time></div>
+    </div>
+    <div class="textArea">
+        <div class="tegArea">#teg6</div>
+        <button class="editNewsButton"></button>
+        <button class="deleteNewsButton"></button>
+        <a class="newsArea" href="error.html">
+
+            <h1 class="newsHeader">
+                Третий ресторан "Лидо" площадью около 900 кв м откроется в историческом центре Минска
+            </h1>
+            <p class="newsText">
+                На Немиге, в торговом центре «Метрополь»,
+                сразу на двух этажах разместится ресторан-бистро «Лидо».
+                В новом ресторане будет 250 посадочных мест против 670 в «Лидо» возле Комаровского рынка.
+                Источники, знакомые с проектом, отмечают, что он будет «более изысканным,
+                соответствующим всем современным тенденциям и в интерьере, и в кухне».
+            </p>
+        </a>
+        <div class="authorNews">Author</div>
+        <div class="dateNews"><time pubdate datatime="2017-02-22 14:43">2017-02-22 14:43</time></div>
+    </div>
+    <div class="textArea">
+        <div class="tegArea">#teg7</div>
+        <button class="editNewsButton"></button>
+        <button class="deleteNewsButton"></button>
+        <a class="newsArea" href="error.html">
+
+            <h1 class="newsHeader">Масленичная неделя: подборка необычных рецептов блинов</h1>
+            <p class="newsText">
+                Масленичная неделя почти завершилась.
+                Наверняка на многих столах в это время блины появлялись чаще обычного.
+                Команда TAM.BY решила отойти от традиционных способов приготовления и
+                подобрала несколько интересных рецептов.
+            </p>
+        </a>
+        <div class="authorNews">Author</div>
+        <div class="dateNews"><time pubdate datatime="2017-02-22 14:43">2017-02-22 14:43</time></div>
+    </div>
+    <div class="textArea">
+        <div class="tegArea">#teg1 #teg2 #teg3</div>
+        <button class="editNewsButton"></button>
+        <button class="deleteNewsButton"></button>
+        <a class="newsArea" href="error.html">
+
+            <h1 class="newsHeader">Where can I get some?</h1>
+            <p class="newsText">
+                There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form,
+                by injected humour, or randomised words which don't look even slightly believable.
+            </p>
+        </a>
+        <div class="authorNews">Author</div>
+        <div class="dateNews"><time pubdate datatime="2017-02-22 14:43">2017-02-22 14:43</time></div>
+    </div>
+    <div class="textArea">
+        <div class="tegArea">#teg1 #teg2 #teg3</div>
+        <button class="editNewsButton"><!--<img src="./image/redactButton.png" class="editNewsPicture">--></button>
+        <button class="deleteNewsButton"></button>
+        <a class="newsArea" href="error.html">
+            <h1 class="newsHeader">What is Lorem Ipsum?</h1>
+            <p class="newsText">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Donec vehicula euismod ullamcorper.
+                Pellentesque eget ante quis risus consequat ultricies nec eget mi.
+                In ut cursus felis. Donec ac ligula velit. Aenean lacinia in orci eu varius.
+            </p>
+        </a>
+        <div class="authorNews">Author</div>
+        <div class="dateNews"><time pubdate datatime="2017-02-22 14:43">2017-02-22 14:43</time></div>
+    </div>
+    <div class="textArea">
+        <div class="tegArea">#teg1 #teg2 #teg3</div>
+        <button class="editNewsButton"></button>
+        <button class="deleteNewsButton"></button>
+        <a class="newsArea" href="error.html">
+
+            <h1 class="newsHeader">Why do we use it?</h1>
+            <p class="newsText">
+                It is a long established fact that a reader will be distracted
+                by the readable content of a page when looking at its layout.
+                The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters,
+                as opposed to using 'Content here, content here', making it look like readable English.
+            </p>
+        </a>
+        <div class="authorNews">Author</div>
+        <div class="dateNews"><time pubdate datatime="2017-02-22 14:43">2017-02-22 14:43</time></div>
+    </div>
+    <div class="textArea">
+        <div class="tegArea">#teg1 #teg2 #teg3</div>
+        <button class="editNewsButton"></button>
+        <button class="deleteNewsButton"></button>
+        <a class="newsArea" href="error.html">
+
+            <h1 class="newsHeader">Where does it come from?</h1>
+            <p class="newsText">
+                Contrary to popular belief, Lorem Ipsum is not simply random text.
+                It has roots in a piece of classical Latin literature from 45 BC,
+                making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia,
+                looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage,
+                and going through the cites of the word in classical literature, discovered the undoubtable source.
+            </p>
+        </a>
+        <div class="authorNews">Author</div>
+        <div class="dateNews"><time pubdate datatime="2017-02-22 14:43">2017-02-22 14:43</time></div>
+    </div>
+    <div class="textArea">
+        <div class="tegArea">#teg1 #teg2 #teg3</div>
+        <button class="editNewsButton"></button>
+        <button class="deleteNewsButton"></button>
+        <a class="newsArea" href="error.html">
+
+            <h1 class="newsHeader">Where can I get some?</h1>
+            <p class="newsText">
+                There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form,
+                by injected humour, or randomised words which don't look even slightly believable.
+            </p>
+        </a>
+        <div class="authorNews">Author</div>
+        <div class="dateNews"><time pubdate datatime="2017-02-22 14:43">2017-02-22 14:43</time></div>
+    </div>
+</main>
+
+</div>
+<div class="page-buffer"></div>
+</div>
+<footer>
+    <p>
+    Колчанов Н.С.<br>
+    Курс: 3 Группа: 6<br>
+    E-mail: sikmakn@gmail.com
+    </p>
+</footer>
+</body>
+</html>
