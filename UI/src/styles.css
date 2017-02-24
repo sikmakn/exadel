@@ -36,7 +36,8 @@ header button{
 
 }
 .user{
-    background-image: url(image/users.PNG);
+   /* background-image: url(image/users.PNG);*/
+    background-color: #1c97f4;
     left:80%;
     width: 20%;
     height: 120px;
