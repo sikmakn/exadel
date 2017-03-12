@@ -1,10 +1,11 @@
-body{
+body {
     background-color: #e9f3fd;
-    margin:0;
+    margin: 0;
 }
-header{
+
+header {
     background-color: white;
-    float:left;
+    float: left;
     width: 77%;
     height: 120px;
 
@@ -12,21 +13,24 @@ header{
 
     position: relative;
 }
-header h1{
+
+header h1 {
     position: absolute;
     font-style: italic;
     font-size: calc(20px + 2vw);
 }
-header p{
+
+header p {
     float: right;
     font-size: 80%;
     position: absolute;
-    bottom:-5%;
-    right:1%;
+    bottom: -5%;
+    right: 1%;
 
 }
-header button{
-    position:absolute;
+
+header button {
+    position: absolute;
     right: 4%;
     bottom: -40%;
 
@@ -35,148 +39,192 @@ header button{
     height: 31%;
 
 }
-.user{
-   /* background-image: url(image/users.PNG);*/
+
+.user {
+    /* background-image: url(image/users.PNG);*/
     background-color: #1c97f4;
-    left:80%;
+    left: 80%;
     width: 20%;
     height: 120px;
 
     position: relative;
 }
-#titleUser{
-    position: absolute;
-    top:20px;
-    left: 0;
-    font-size: 1.4vw;
 
-    font-weight: 900;
-}
-#login{
+#login {
     position: absolute;
-    top:8px;
+    top: 8px;
     right: 5%;
+    align-content: center;
     font-family: Impact;
     font-weight: 500;
     font-size: 30px;
 }
-.user button{
+
+.user button {
     position: absolute;
     top: 76%;
     right: 0;
     height: 25px;
     margin-right: 8%;
 }
+
+#log-in-button {
+    display: none;
+}
+
+/*log-off*/
+#add-news-button-log-off {
+    display: none;
+}
+
+#log-off-button-log-off {
+    display: none;
+}
+
+#log-in-button-log-off {
+    display: block;
+}
+
+.teg-area-log-off {
+    float: left;
+    width: 100%;
+    height: 30px;
+    color: white;
+    background-color: #1c97f4;
+}
+
+.edit-news-button-log-off {
+    display: none;
+}
+
+.delete-news-button-log-off {
+    display: none;
+}
+
 /*ФИЛЬТРАЦИЯ*/
-aside{
-    float:left;
+aside {
+    float: left;
     background-color: #91cbf9;
     opacity: 0.8;
     width: 20%;
     position: fixed;
     right: 0;
-    top:190px;
+    top: 190px;
 }
-#filterTitle{
+
+#filter-title {
     text-align: center;
     font-size: calc(12px + 1vw);
 }
-.filterItemName{
+
+.filter-item-name {
     margin: 0;
     padding: 0;
-    float:left;
+    float: left;
     font-size: calc(12px + 0.5vw);
 }
-.filterMenuCheckbox{
-     float: left;
- }
+
+.filter-menu-checkbox {
+    float: left;
+}
+
 /*Меню выбора параметров*/
-.menu{
+.menu {
     list-style-type: none;
     width: 100%;
     padding: 0;
 }
-.submenu li{
+
+.submenu li {
     list-style-type: none;
 }
-.menu li label{
+
+.menu li label {
     width: 100%;
     float: right;
 }
-.submenu{
+
+.submenu {
     display: none;
     padding: 0;
 }
 
-.filterMenuCheckbox:checked ~.submenu{
+.filter-menu-checkbox:checked ~ .submenu {
     display: block;
 }
 
-.filterTextArea{
+.filter-text-area {
     width: 96%;
     float: left;
     text-align: center;
     white-space: pre-wrap;
     resize: vertical;
 }
-.filterFindButton{
+
+.filter-find-button {
     position: relative;
     left: 37%;
     margin: 2%;
     font-family: "Comic Sans MS";
 }
+
 /*НОВОСТИ*/
-main{
+main {
     float: left;
     width: 75%;
     position: relative;
-    top:60px;
+    top: 60px;
     left: 1%;
     margin-left: 0;
 }
-.pagination{
+
+.pagination {
     float: right;
     background-color: #91cbf9;
     width: 100%;
     margin-top: 10px;
     margin-bottom: 20px;
 }
-.pagination a{
+
+.pagination a {
     float: left;
     margin-right: 2%;
     margin-left: 2%;
 }
-.pagination p{
+
+.pagination p {
     margin: 0;
     padding: 0;
     float: left;
 }
+
 /*Текст, теги и развернуть*/
-.tegArea{
-    float:left;
+.teg-area {
+    float: left;
     width: calc(100% - 60px);
     height: 30px;
     color: white;
-    background-color: #1c97f4;
+    background-color: red;
 
 }
-.editNewsButton{
+
+.edit-news-button {
     width: 30px;
     height: 30px;
-    float:left;
-    background-image:url(image/redactButton.png);
+    float: left;
+    background-image: url(image/redactButton.png);
     background-size: 28px;
 }
 
-.deleteNewsButton{
+.delete-news-button {
     float: left;
-    background-image:url(image/bucket.png);
+    background-image: url(image/bucket.png);
     background-size: 27px;
     width: 30px;
     height: 30px;
 }
 
-.newsArea{
+.news-area {
     display: block;
     float: right;
     width: 100%;
@@ -188,17 +236,19 @@ main{
     text-decoration: none;
 }
 
-.newsArea:hover{
+.news-area:hover {
     box-shadow: 0px 0px 20px;
 }
 
-.newsHeader{
+.news-header {
     text-align: center;
 }
-.newsText{
+
+.news-text {
     text-indent: 40px;
 }
-.authorNews{
+
+.news-author {
     float: left;
     width: 50%;
     background-color: #91cbf9;
@@ -206,7 +256,8 @@ main{
     text-align: center;
     margin-bottom: 30px;
 }
-.dateNews{
+
+.news-date {
     float: left;
     width: 50%;
     height: 10%;
@@ -214,6 +265,7 @@ main{
     background-color: grey;
     opacity: 0.6;
 }
+
 /*Подвал*/
 html, body {
     height: 100%;
@@ -221,68 +273,73 @@ html, body {
     padding: 0;
 
 }
-body{
+
+body {
     display: flex;
     flex-direction: column;
 }
+
 .page-wrapper {
     min-height: 100%;
     flex: 1 0 auto;
 
 }
+
 .page-buffer {
     height: 50px;
 }
 
-footer{
+footer {
     flex: 0 0 auto;
     width: 100%;
     background-color: aqua;
     margin-top: 10%;
 }
 
-@media screen and (max-width: 500px){
+@media screen and (max-width: 500px) {
 
-    main{
+    main {
         width: 100%;
-        top:0;
+        top: 0;
         margin-top: 5px;
     }
-    header{
+
+    header {
         width: 100%;
     }
-    header button{
+
+    header button {
         font-size: calc(4px + 3vw);
         left: 2%;
 
-        top:130px;
+        top: 130px;
     }
-    header p{
+
+    header p {
         font-size: calc(6px + 1.5vw);
     }
-    header h1{
+
+    header h1 {
         font-size: calc(10px + 5vw);
         width: 70%;
     }
 
-    aside{
+    aside {
         position: static;
         margin-bottom: 0;
         width: 100%;
         margin-top: calc(45px + 4vw);
     }
 
-    .user{
+    .user {
         position: absolute;
         left: 70%;
-        top:0;
-        width:30%;
+        top: 0;
+        width: 30%;
         height: 20vw;
     }
-    #titleUser{
-        display: none;
-    }
-    #login{
+
+    #login {
         position: static;
         margin-top: 0;
         margin-bottom: -4px;
@@ -290,14 +347,16 @@ footer{
         margin-right: 5%;
         font-size: calc(5px + 5vw);
     }
-    .user button{
+
+    .user button {
         position: static;
         margin-top: 4px;
         margin-left: 5%;
-        top:10px;
+        top: 10px;
         font-size: 4vw;
         height: 8vw;
     }
-
-
+    .news-header{
+        font-size: 100%;
+    }
 }
