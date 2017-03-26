@@ -86,9 +86,10 @@ header button {
 }
 
 .teg-area-log-off {
+    overflow: auto;
     float: left;
     width: 100%;
-    height: 30px;
+    height: 50px;
     color: white;
     background-color: #1c97f4;
 }
@@ -161,7 +162,7 @@ aside {
     resize: vertical;
 }
 
-.filter-find-button {
+#filter-find-button {
     position: relative;
     left: 37%;
     margin: 2%;
@@ -178,7 +179,7 @@ main {
     margin-left: 0;
 }
 
-.pagination {
+#pagination {
     float: right;
     background-color: #91cbf9;
     width: 100%;
@@ -186,31 +187,60 @@ main {
     margin-bottom: 20px;
 }
 
-.pagination a {
+#pagination button {
     float: left;
-    margin-right: 2%;
-    margin-left: 2%;
+    width: 50px;
 }
 
-.pagination p {
+#pagination p {
     margin: 0;
     padding: 0;
     float: left;
+    margin-right: 2%;
 }
 
+.pagination-checked{
+    background-color: #ffffcd;
+}
+
+/*Поле регистрации и входа*/
+#log-in-area{
+    display: inline-block;
+    width: 350px;
+    border-width: 3px;
+    border-color: black;
+    border-style: solid;
+    background-color: aliceblue;
+}
+
+#log-in-area textarea{
+    margin-left: 5%;
+    width: 90%;
+    overflow: hidden;
+    word-wrap: normal;
+}
+#log-in-area button{
+    float: right;
+    height: 50px;
+    width: 100px;
+    margin: 5px;
+    margin-right: 10px;
+    border-style: solid;
+    background-color: darkgrey;
+}
 /*Текст, теги и развернуть*/
 .teg-area {
     float: left;
     width: calc(100% - 60px);
-    height: 30px;
+    height: 50px;
     color: white;
     background-color: red;
-
+    overflow: auto;
 }
 
 .edit-news-button {
     width: 30px;
-    height: 30px;
+    height: 50px;
     float: left;
     background-image: url(image/redactButton.png);
     background-size: 28px;
@@ -221,7 +251,7 @@ main {
     background-image: url(image/bucket.png);
     background-size: 27px;
     width: 30px;
-    height: 30px;
+    height: 50px;
 }
 
 .news-area {
@@ -231,9 +261,6 @@ main {
     height: 75%;
     margin-bottom: 0.5%;
     background-color: #ffffcd;
-
-    color: black;
-    text-decoration: none;
 }
 
 .news-area:hover {
@@ -244,10 +271,24 @@ main {
     text-align: center;
 }
 
-.news-text {
+.news-summary {
     text-indent: 40px;
 }
 
+.news-summary-at-full{
+    margin-left: 60px;
+    margin-right: 40px;
+    font-size: small;
+    color: gray;
+}
+
+.news-full-text-unvisible{
+    display: none;
+}
+.news-full-text-visible{
+    text-indent: 40px;
+    display: block;
+}
 .news-author {
     float: left;
     width: 50%;
@@ -265,7 +306,20 @@ main {
     background-color: grey;
     opacity: 0.6;
 }
+.news-edit-button-visible{
+    display: block;
 
+    border-style: solid;
+    padding: 0px;
+    margin-right: 4px;
+    margin-bottom: 5px;
+    height: 30px;
+    width: 100px;
+    float: right;
+}
+.news-edit-button-unvisible{
+    display: none;
+}
 /*Подвал*/
 html, body {
     height: 100%;
@@ -358,5 +412,15 @@ footer {
     }
     .news-header{
         font-size: 100%;
+    }
+    #pagination button {
+        float: left;
+        width: 50%;
+        height: 50px;
+    }
+
+    #log-in-area{
+        width: 95%;
+        font-size: small;
     }
 }
