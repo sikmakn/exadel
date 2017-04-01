@@ -2,8 +2,6 @@
 
 var DOC = document;
 
-window.onunload = unloadLocalStorageArticles;
-
 function onresizePagination() {
     NEWS_VIEW.createPagination(INDEX_THIS_PAGE);
     if (window.innerWidth > 500) {

@@ -22,12 +22,12 @@ var USER = null;
 
 var FILTER_CONFIG = null,
     INDEX_THIS_PAGE = 1;
-var NEWS_MODEL = new NewsModel();
+//var NEWS_MODEL = new NewsModel();
 var NEWS_VIEW = new NewsView();
 
 
-function printArticles() {
-    var articles = NEWS_MODEL.getArticles();
+function printArticles(articles) {
+    var articles = articles||NEWS_MODEL.getArticles();
     NEWS_VIEW.printNewsList(articles);
     NEWS_VIEW.createPagination(0, NEWS_MODEL.articleLength);
 };
@@ -71,4 +71,4 @@ function editArticle(id, article) {
 ///////
 downloadLocalStorageArticles();
 unLogInUser();
-printArticles();
+//printArticles();

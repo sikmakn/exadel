@@ -2,12 +2,11 @@
 
 var DOC = document;
 
-window.onunload = unloadLocalStorageArticles;
+//window.onunload = unloadLocalStorageArticles;
 
 function onresizePagination() {
     NEWS_VIEW.createPagination(INDEX_THIS_PAGE);
     if (window.innerWidth > 500) {
-
         var pagesButton = DOC.getElementsByClassName("pagination-checked")[0],
             thisPageButton = DOC.getElementById("page" + INDEX_THIS_PAGE);
 
@@ -20,8 +19,8 @@ function onresizePagination() {
 };
 window.onresize = onresizePagination;
 
-function clickForFullNews(event) {
-    var flag;
+function clickForFullNews() {
+
     var newsContent = this.children[2],
         newsTitle = this.children[1];
     if ("news-full-text-visible" === newsContent.className) {
@@ -37,9 +36,11 @@ function clickForFullNews(event) {
 function clickRemoveNews() {
     if (confirm("Вы действительно хотите удалить эту новость?")) {
         var id = this.parentNode.id;
-        if (!removeArticle("" + id)) {
+       /* if (!removeArticle("" + id)) {
             alert("Новость не удалось удалить");
-        }
+        }*/
+       deleteNewsFromServer(id);
+        NEWS_VIEW.removeNews(id);
     }
 };
 
@@ -52,7 +53,9 @@ function clickRedactNews() {
         content = newsArea.children[2],
         saveButton = newsArea.children[3],
         canselButton = newsArea.children[4];
-
+    var originalData = {id: newsArea.parentNode.id ,title:header.innerHTML, summary:summary.innerHTML,
+        content:content.innerHTML, teg: tegArea.innerHTML};
+    ORIGINAL_DATA_EDITING_NEWS.push(originalData);
     header.contentEditable = true;
     summary.contentEditable = true;
     content.contentEditable = true;
@@ -95,7 +98,6 @@ function clickSaveRedactNews() {
         divMain = newsArea.parentNode,
         tegArea = divMain.children[0],
         article;
-
     if (header.innerHTML && summary.innerHTML && content.innerHTML && tegArea.innerHTML &&
         header.innerHTML !== "Заголовок" && summary.innerHTML !== "краткое описание" && content.innerHTML !== "Полный текст новости") {
 
@@ -114,10 +116,14 @@ function clickSaveRedactNews() {
                 }
             });
             if (!errorTegFlag) {
-                article = new Article(id + "", header.innerHTML, summary.innerHTML, new Date, USER, content.innerHTML, tegs);
+                article = {id: id , title: header.innerHTML,summary: summary.innerHTML,
+                    createdAt: new Date(),author: USER,content: content.innerHTML,teg: tegs};
                 tegArea.innerHTML = "<a/>" + tegs.join("</a>  <a/>");
-                if (!editArticle(id, article)) {
-                    NEWS_MODEL.addArticle(article);
+                if (id === "temporary") {
+                    addNewsOnServer(article);
+                } else {
+                    editNewsOnServer(article);
+                    NEWS_VIEW.editNews(id, article);
                 }
 
                 newsArea.onclick = clickForFullNews;
@@ -146,11 +152,24 @@ function clickCanselRedactNews() {
         divMain = newsArea.parentNode,
         tegArea = divMain.children[0];
 
-    if (!NEWS_MODEL.getArticle(id)) {
+    if (id==="temporary") {
         NEWS_VIEW.removeNews(id);
+        var addNewsButton = DOC.getElementById("add-news-button");
+        addNewsButton.onclick = clickAddNews;
     } else {
-        var tegs = tegArea.innerHTML.split(",");
-        tegArea.innerHTML = "<a/>" + tegs.join("</a>  <a/>");
+
+       /* var tegs = tegArea.innerHTML.split(",");
+        tegArea.innerHTML = "<a/>" + tegs.join("</a>  <a/>");*/
+       for(var i = 0; i < ORIGINAL_DATA_EDITING_NEWS.length; i++){
+           if(ORIGINAL_DATA_EDITING_NEWS[i].id===id){
+               break;
+           }
+       }
+        header.innerHTML = ORIGINAL_DATA_EDITING_NEWS[i].title;
+        summary.innerHTML = ORIGINAL_DATA_EDITING_NEWS[i].summary;
+        content.innerHTML = ORIGINAL_DATA_EDITING_NEWS[i].content;
+        tegArea.innerHTML = ORIGINAL_DATA_EDITING_NEWS[i].teg;
+        ORIGINAL_DATA_EDITING_NEWS.splice(i, 1);
 
         newsArea.onclick = clickForFullNews;
         header.contentEditable = summary.contentEditable = content.contentEditable = tegArea.contentEditable = false;
@@ -161,30 +180,16 @@ function clickCanselRedactNews() {
     }
 };
 
-function goInPage(event) {
+function goInPage() {
     INDEX_THIS_PAGE = +this.id.split("e")[1];
     var id = this.id,
         parent = this.parentNode;
 
-    //   event.preventDefault();
-    NEWS_VIEW.removeAllNews();
-    var articles = NEWS_MODEL.getArticles(INDEX_THIS_PAGE * 10 - 10, INDEX_THIS_PAGE * 10, FILTER_CONFIG)
-    NEWS_VIEW.printNewsList(articles);
+    printFilterArticles(INDEX_THIS_PAGE * 10 - 10, INDEX_THIS_PAGE * 10);
 
     if (window.innerWidth > 500) {
         if ((this.nextSibling && this.nextSibling.disabled) || (this.previousSibling && this.previousSibling.disabled)) {
-            NEWS_VIEW.createPagination(INDEX_THIS_PAGE);
-            var pagesButton = parent.childNodes;
-            for (var i = 0; i < pagesButton.length; i++) {
-                if (pagesButton[i].className == "pagination-checked") {
-                    pagesButton[i].className = "";
-                    pagesButton[i].disabled = "";
-                }
-                if (pagesButton[i].id == id) {
-                    pagesButton[i].className = "pagination-checked";
-                    pagesButton[i].disabled = "disabled";
-                }
-            }
+            printPagination(INDEX_THIS_PAGE);
         } else {
             var pagesButton = this.parentNode.childNodes;
             pagesButton.forEach(function (item) {
@@ -195,7 +200,7 @@ function goInPage(event) {
             this.disabled = "disabled";
         }
     } else {
-        NEWS_VIEW.createPagination(INDEX_THIS_PAGE);
+        printPagination(INDEX_THIS_PAGE);
     }
 };
 
@@ -218,17 +223,17 @@ function clickFilterButton() {
     if (beginDateAddedValue || authorNameValue || tegsFilterValue || endDateAddedValue) {
         if (beginDateAddedValue) {
             if (/\d\d\d\d\.\d\d\.\d\d/.test(beginDateAddedValue)) {
-                dateBegin = new Date(beginDateAddedValue);
+                dateBegin = beginDateAddedValue;
             } else {
                 alert("Дата начала поиска введена неверно");
                 rePrintFlag = false;
             }
         } else {
-            dateEnd = 0;
+            dateBegin = 0;
         }
         if (endDateAddedValue) {
             if (/\d\d\d\d\.\d\d\.\d\d/.test(endDateAddedValue)) {
-                dateEnd = new Date(endDateAddedValue);
+                dateEnd = endDateAddedValue;
             } else {
                 alert("Дата конца поиска введена неверно");
                 rePrintFlag = false;
@@ -238,17 +243,9 @@ function clickFilterButton() {
         }
         if (rePrintFlag) {
             var tegs = tegsFilterValue.split(",");
-            FILTER_CONFIG = new FilterConfig(authorNameValue, dateBegin, dateEnd, tegs);
-
-            articles = NEWS_MODEL.getArticles(0, 9, FILTER_CONFIG);
-            if (articles.length) {
-                NEWS_VIEW.removeAllNews();
-                NEWS_VIEW.printNewsList(articles);
-                NEWS_VIEW.createPagination();
-            } else {
-                alert("Новостей соответствуищих фильтрам не найдено.");
-                FILTER_CONFIG = null;
-            }
+            FILTER_CONFIG = {author: authorNameValue, dateBegin: dateBegin, dateEnd: dateEnd, teg: tegs};
+            //new FilterConfig(authorNameValue, dateBegin, dateEnd, tegs);
+            printFilterArticles();
         }
         beginDateAdded.value = authorName.value = tegsFilter.value = endDateAdded.value = "";
 
@@ -260,13 +257,18 @@ function clickFilterButton() {
 };
 
 var addNewsButton = DOC.getElementById("add-news-button");
-addNewsButton.onclick = function () {
-    var date = new Date();
-    var newId = date.getTime();
-    NEWS_VIEW.addOneNews(new Article(newId + "", "Заголовок", "краткое описание", new Date(), USER,
-        "Полный текст новости", ["Теги", "через", "запятую", "максимум", "5"]));
+addNewsButton.onclick = clickAddNews;
+function clickAddNews() {
+    //var date = new Date();
+    var newId = "temporary";//date.getTime();
+    NEWS_VIEW.addOneNews({
+        id: newId, title: "Заголовок", summary: "краткое описание", createdAt: new Date(), author: USER,
+        content: "Полный текст новости", teg: ["Теги", "через", "запятую", "максимум", "5"]
+    });
+    this.onclick = "";
     var news = DOC.getElementById(newId + "");
     news.children[1].dispatchEvent(new Event("click"));
+
 };
 
 var logOffButton = DOC.getElementById("log-off-button");
@@ -275,6 +277,7 @@ logOffButton.onclick = function () {
     unLogInUser();
     NEWS_VIEW.removeAllNews();
     printArticles();
+
 };
 
 var logInButton = DOC.getElementById("log-in-button");
@@ -331,39 +334,10 @@ function clickInputLoginButton() {
         nameTextarea = logInArea.children[2],
         passwordTextarea = logInArea.children[4],
         name = nameTextarea.value,
-        password = passwordTextarea.value,
-        filterButton = DOC.getElementById("filter-find-button");
-
+        password = passwordTextarea.value;
 
     if (name && password) {
-        for (var i = 0; i < USERS.length; i++) {
-            if (USERS[i].getLogin() === name) {
-                break;
-            }
-        }
-
-        if (i < USERS.length) {
-            if (USERS[i].getPassword() === password) {
-                USER = name;
-                logInArea.remove();
-                unLogInUser();
-                printArticles();
-                window.onresize = onresizePagination;
-                filterButton.onclick =clickFilterButton;
-            } else {
-                alert("Неверный пароль");
-            }
-        } else {
-            USERS.push(new userInformation(name, password));
-            USER = name;
-            alert("Пользователь успешно зарегистрирован");
-            logInArea.remove();
-            unLogInUser();
-            printArticles();
-            logOffButton.id = "log-off-button";
-            window.onresize = onresizePagination;
-            filterButton.onclick =clickFilterButton;
-        }
+        loginServer(name, password);
     } else {
         alert("Введите имя и логин");
     }

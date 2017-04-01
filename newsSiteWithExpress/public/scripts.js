@@ -3,34 +3,15 @@
  */
 "use strict";
 
-
-
 /*CONTROLLER*/
-var userInformation = function (login,password) {
-    var login = login;
-    var password = password;
-    this.getLogin = function () {
-        return login;
-    };
-    this.getPassword = function () {
-        return password;
-    };
-};
-var USERS = [new userInformation("sikmak","12345678")];
+
 var USER = null;
 
-
 var FILTER_CONFIG = null,
-    INDEX_THIS_PAGE = 1;
-var NEWS_MODEL = new NewsModel();
+    INDEX_THIS_PAGE = 1,
+    ARTICLE_AMOUNT;
+var ORIGINAL_DATA_EDITING_NEWS=[];
 var NEWS_VIEW = new NewsView();
-
-
-function printArticles() {
-    var articles = NEWS_MODEL.getArticles();
-    NEWS_VIEW.printNewsList(articles);
-    NEWS_VIEW.createPagination(0, NEWS_MODEL.articleLength);
-};
 
 /*function addArticle(newArticle) {
     if (NEWS_MODEL.addArticle(newArticle)) {
@@ -49,7 +30,7 @@ function editTegs(id, tegs) {
  return true;
  }
  return false;
- }*/
+ }
 
 function removeArticle(id) {
     if (NEWS_MODEL.removeArticle(id)) {
@@ -67,8 +48,7 @@ function editArticle(id, article) {
     }
     return false;
 };
-
+*/
 ///////
-downloadLocalStorageArticles();
 unLogInUser();
 printArticles();

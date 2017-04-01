@@ -44,9 +44,10 @@ function NewsView() {
         });
     };
 
-    this.createPagination = function (id) {
+    this.createPagination = function (id, articleLength) {
+        articleLength = articleLength|| ARTICLE_AMOUNT;
         var pagination = DOC.getElementById("pagination"),
-            pageCount = Math.ceil(NEWS_MODEL.articleLength / 10);
+            pageCount = Math.ceil(articleLength / 10);
 
         if (id === undefined || typeof id == 'string' || id instanceof Object) {
             id = 0;
@@ -66,8 +67,10 @@ function NewsView() {
             pageIndex.id = pageId;
             pageIndex.onclick = goInPage;
             pageIndex.innerHTML = 1;
-            pageIndex.className = "pagination-checked";
-            pageIndex.disabled = "disabled";
+            if(id===1||id===0) {
+                pageIndex.className = "pagination-checked";
+                pageIndex.disabled = "disabled";
+            }
             pagination.appendChild(pageIndex);
 
             if (id < Math.ceil(possibleCountIndexes / 2)) {
@@ -86,6 +89,10 @@ function NewsView() {
                     pageIndex.id = pageId;
                     pageIndex.onclick = goInPage;
                     pageIndex.innerHTML = i;
+                    if(id===i) {
+                        pageIndex.className = "pagination-checked";
+                        pageIndex.disabled = "disabled";
+                    }
                     pagination.appendChild(pageIndex);
                 }
 
@@ -114,6 +121,10 @@ function NewsView() {
                     pageIndex.id = pageId;
                     pageIndex.onclick = goInPage;
                     pageIndex.innerHTML = i;
+                    if(id===i) {
+                        pageIndex.className = "pagination-checked";
+                        pageIndex.disabled = "disabled";
+                    }
                     pagination.appendChild(pageIndex);
                 }
             }
@@ -130,6 +141,10 @@ function NewsView() {
                 pageIndex = DOC.createElement("button");
                 pageIndex.href = "javascript:void(0)";
                 pageIndex.id = pageId;
+                if(id===pageCount) {
+                    pageIndex.className = "pagination-checked";
+                    pageIndex.disabled = "disabled";
+                }
                 pageIndex.onclick = goInPage;
                 pageIndex.innerHTML = pageCount;
                 pagination.appendChild(pageIndex);
@@ -218,10 +233,10 @@ function NewsView() {
             saveButton = DOC.createElement("button"),
             canselButton = DOC.createElement("button");
 
-        divMain.id = article.id;
+        divMain.id = article._id;
         divMain.className = "one-news";
 
-        divTegs.id = "teg-" + article.id;
+        divTegs.id = "teg-" + article._id;
         divTegs.innerHTML = "<a/>" + article.teg.join("</a>  <a/>");
         if (USER) {
             divTegs.className = "teg-area";
