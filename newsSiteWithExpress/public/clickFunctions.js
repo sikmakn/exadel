@@ -242,7 +242,7 @@ function clickFilterButton() {
             dateEnd = 0;
         }
         if (rePrintFlag) {
-            var tegs = tegsFilterValue.split(",");
+            var tegs = tegsFilterValue.split(", ");
             FILTER_CONFIG = {author: authorNameValue, dateBegin: dateBegin, dateEnd: dateEnd, teg: tegs};
             //new FilterConfig(authorNameValue, dateBegin, dateEnd, tegs);
             printFilterArticles();
@@ -262,11 +262,11 @@ function clickAddNews() {
     //var date = new Date();
     var newId = "temporary";//date.getTime();
     NEWS_VIEW.addOneNews({
-        id: newId, title: "Заголовок", summary: "краткое описание", createdAt: new Date(), author: USER,
+        _id: newId, title: "Заголовок", summary: "краткое описание", createdAt: new Date(), author: USER,
         content: "Полный текст новости", teg: ["Теги", "через", "запятую", "максимум", "5"]
     });
     this.onclick = "";
-    var news = DOC.getElementById(newId + "");
+    var news = DOC.getElementById(newId);
     news.children[1].dispatchEvent(new Event("click"));
 
 };
