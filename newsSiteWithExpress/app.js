@@ -46,8 +46,9 @@ app.delete('/deleteNews', function (req, res) {
 });
 
 app.post('/addNews', function (req, res) {
-    var article = new articleModel.Article(req.body.id, req.body.title, req.body.summary, new Date(req.body.createdAt),
-        req.body.author, req.body.content, req.body.teg);
+    var article = new articleModel.Article.fromObjToArticle(req.body);
+    /*req.body.id, req.body.title, req.body.summary, new Date(req.body.createdAt),
+        req.body.author, req.body.content, req.body.teg);*/
     var id = newsModel.addArticle(article);
     res.end(id);
 });

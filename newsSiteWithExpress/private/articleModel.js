@@ -14,7 +14,7 @@ function Article(_id, title, summary, createdAt, author, content, teg) {
     this.teg = teg;
 
     Article.fromObjToArticle = function (obj) {
-        return new Article(obj._id, obj.title, obj.summary, new Date(obj.createdAt), obj.author, obj.content, obj.teg);
+        return new Article(obj.id, obj.title, obj.summary, new Date(obj.createdAt), obj.author, obj.content, obj.teg);
     };
 
     Article.validateArticle = function (article) {
