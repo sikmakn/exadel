@@ -1,8 +1,8 @@
 "use strict";
-var DiskDB = require('diskdb');
-var db = DiskDB.connect(__dirname + '/db', ['articles']);
+const DiskDB = require('diskdb');
+const db = DiskDB.connect(__dirname + '/db', ['articles']);
 /*Model*/
-var TEGS = ["teg1", "teg2", "teg3", "teg4", "teg5", "teg6", "teg7", "teg8", "teg9", "teg10"];
+const TEGS = ["teg1", "teg2", "teg3", "teg4", "teg5", "teg6", "teg7", "teg8", "teg9", "teg10"];
 
 function Article(_id, title, summary, createdAt, author, content, teg) {
     this._id = _id;
@@ -32,17 +32,17 @@ function Article(_id, title, summary, createdAt, author, content, teg) {
         return false;
 
     };
-};
+}
 
 function FilterConfig(author, dateBegin, dateEnd, teg) {
     this.author = author;
     this.dateBegin = dateBegin;
     this.dateEnd = dateEnd;
     this.teg = teg;
-};
+}
 
 function NewsModel() {
-    var articles = /* [
+    let articles = /* [
      {
      id: '1',
      title: 'Минское «Динамо» обыграло ярославский «Локомотив»',
@@ -200,9 +200,9 @@ function NewsModel() {
             }
 
             if (Array.isArray(filterConfig.teg)) {
-                for (var j = 0; j < filterConfig.teg.length; j++) {
+                for (let j = 0; j < filterConfig.teg.length; j++) {
                     sortedArticles = sortedArticles.filter(function (obj) {
-                        for (var i = 0; i < obj.teg.length; i++) {
+                        for (let i = 0; i < obj.teg.length; i++) {
                             if (obj.teg[i] === filterConfig.teg[j]) {
                                 return true;
                             }
@@ -261,7 +261,7 @@ function NewsModel() {
 
         articles.sort(compareData);
 
-        var sortedArticles = articles;
+        let sortedArticles = articles;
         sortedArticles = getArticlesByAuthor(sortedArticles, filterConfig);
         sortedArticles = getArticlesByTeg(sortedArticles, filterConfig);
         sortedArticles = getArticlesByData(sortedArticles, filterConfig);
@@ -273,7 +273,7 @@ function NewsModel() {
     };
 
     this.getArticle = function (_id) {
-        var idArticleMass = articles.filter(function (obj) {
+        const idArticleMass = articles.filter(function (obj) {
             return obj._id === _id;
         });
         if (!idArticleMass.length) {
@@ -289,7 +289,7 @@ function NewsModel() {
         }
         article = db.articles.save(article);
         article.createdAt = new Date(article.createdAt);
-        var _id = article._id;
+        const _id = article._id;
         articles.push(article);
 
         return _id;
@@ -299,8 +299,8 @@ function NewsModel() {
         if (typeof _id !== 'string' || !_id || !article) {
             return false;
         }
-        var index = -1;
-        for (var i = 0; i < articles.length; i++) {
+        let index = -1;
+        for (let i = 0; i < articles.length; i++) {
             if (_id === articles[i]._id) {
                 index = i;
                 break;
@@ -309,10 +309,10 @@ function NewsModel() {
         if (index < 0) {
             return false;
         }
-        var query = {
+        const query = {
             _id: _id
         };
-        var dataToUpdate = {};
+        const dataToUpdate = {};
         if ((typeof article.title) === 'string' && article.title) {
             articles[index].title = article.title;
             dataToUpdate.title = article.title;
@@ -330,8 +330,8 @@ function NewsModel() {
     };
 
     this.removeArticle = function (_id) {
-        var index = -1;
-        for (var i = 0; i < articles.length; i++) {
+        let index = -1;
+        for (let i = 0; i < articles.length; i++) {
             if (articles[i]._id === _id) {
                 index = i;
                 break;
@@ -351,10 +351,10 @@ function NewsModel() {
             teg = [teg];
         }
         if (Array.isArray(teg)) {
-            var j = 0;
-            for (var i = 0; i < TEGS.length; i++) {
+            let j = 0;
+            for (let i = 0; i < TEGS.length; i++) {
                 if (TEGS[i] === teg[j]) {
-                    for (var k = 0; k < articles[index].teg.length; k++) {
+                    for (let k = 0; k < articles[index].teg.length; k++) {
                         if (articles[index].teg[k] === teg[j]) {
                             // flagDoubleTeg = true;
                             return false;
@@ -375,7 +375,7 @@ function NewsModel() {
     }
 
     this.addTegs = function (_id, teg) {
-        var index = -1;
+        let index = -1;
         articles.forEach(function (item, ind) {
             if (item._id === _id) {
                 index = ind;
@@ -388,8 +388,8 @@ function NewsModel() {
     };
 
     this.removeTeg = function (_id, teg) {
-        var index = -1;
-        for (var i = 0; i < articles.length; i++) {
+        let index = -1;
+        for (let i = 0; i < articles.length; i++) {
             if (articles[i]._id === _id) {
                 index = i;
                 break;
@@ -399,16 +399,16 @@ function NewsModel() {
             return false;
         }
         if (teg && typeof teg === 'string') {
-            var flag = false;
-            for (var i = 0; i < TEGS.length; i++) {
+            let flag = false;
+            for (let i = 0; i < TEGS.length; i++) {
                 if (TEGS[i] === teg) {
                     flag = true;
                     break;
                 }
             }
             if (flag) {
-                var indexTeg;
-                for (var i = 0; i < articles[index].teg.length; i++) {
+                let indexTeg;
+                for (let i = 0; i < articles[index].teg.length; i++) {
                     if (articles[index].teg[i] === teg) {
                         indexTeg = i;
                     }
@@ -422,12 +422,12 @@ function NewsModel() {
     };
 
     this.replaceAllTegs = function (_id, tegs) {
-        var index = -1;
-        if (!(Array.isArray(tegs) && tegs.length !== 0)) {
+        let index = -1;
+        if (!(Array.isArray(tegs) && tegs.length)) {
             return false;
         }
 
-        for (var i = 0; i < articles.length; i++) {
+        for (let i = 0; i < articles.length; i++) {
             if (articles[i]._id === _id) {
                 index = i;
                 break;

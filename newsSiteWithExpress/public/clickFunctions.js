@@ -1,28 +1,26 @@
 "use strict";
 
-var DOC = document;
+const DOC = document;
 
 //window.onunload = unloadLocalStorageArticles;
 
 function onresizePagination() {
     NEWS_VIEW.createPagination(INDEX_THIS_PAGE);
     if (window.innerWidth > 500) {
-        var pagesButton = DOC.getElementsByClassName("pagination-checked")[0];
-        var thisPageButton = DOC.getElementById("page" + INDEX_THIS_PAGE);
+        const pagesButton = DOC.getElementsByClassName("pagination-checked")[0];
+        const thisPageButton = DOC.getElementById("page" + INDEX_THIS_PAGE);
 
         pagesButton.className = "";
         pagesButton.disabled = "";
         thisPageButton.className = "pagination-checked";
         thisPageButton.disabled = "disabled";
     }
-
 }
 window.onresize = onresizePagination;
 
 function clickForFullNews() {
-
-    var newsContent = this.children[2];
-    var newsTitle = this.children[1];
+    const newsContent = this.children[2];
+    const newsTitle = this.children[1];
     if ("news-full-text-visible" === newsContent.className) {
         newsContent.className = "news-full-text-unvisible";
         newsTitle.className = "news-summary";
@@ -30,12 +28,11 @@ function clickForFullNews() {
         newsContent.className = "news-full-text-visible";
         newsTitle.className = "news-summary-at-full";
     }
-
 }
 
 function clickRemoveNews() {
     if (confirm("Вы действительно хотите удалить эту новость?")) {
-        var id = this.parentNode.id;
+        const id = this.parentNode.id;
         /* if (!removeArticle("" + id)) {
          alert("Новость не удалось удалить");
          }*/
@@ -45,15 +42,15 @@ function clickRemoveNews() {
 }
 
 function clickRedactNews() {
-    var divMain = this.parentNode;
-    var tegArea = divMain.children[0];
-    var newsArea = divMain.children[3];
-    var header = newsArea.children[0];
-    var summary = newsArea.children[1];
-    var content = newsArea.children[2];
-    var saveButton = newsArea.children[3];
-    var canselButton = newsArea.children[4];
-    var originalData = {
+    const divMain = this.parentNode;
+    const tegArea = divMain.children[0];
+    const newsArea = divMain.children[3];
+    const header = newsArea.children[0];
+    const summary = newsArea.children[1];
+    const content = newsArea.children[2];
+    const saveButton = newsArea.children[3];
+    const canselButton = newsArea.children[4];
+    const originalData = {
         id: newsArea.parentNode.id, title: header.innerHTML, summary: summary.innerHTML,
         content: content.innerHTML, teg: tegArea.innerHTML
     };
@@ -64,10 +61,11 @@ function clickRedactNews() {
     tegArea.contentEditable = true;
 
     if (tegArea.children.length) {
-        var tegsString = "";
-        for (var i = 0; i < tegArea.children.length; i++) {
-            if (tegArea.children[i].innerHTML !== "")
+        let tegsString = "";
+        for (let i = 0; i < tegArea.children.length; i++) {
+            if (tegArea.children[i].innerHTML) {
                 tegsString += tegArea.children[i].innerHTML + ",";
+            }
         }
         tegArea.innerHTML = tegsString;
         if ("news-full-text-unvisible" === content.className) {
@@ -90,22 +88,23 @@ function clickRedactNews() {
 }
 
 function clickSaveRedactNews() {
-    var newsArea = this.parentNode;
-    var id = newsArea.parentNode.id;
-    var header = newsArea.children[0];
-    var summary = newsArea.children[1];
-    var content = newsArea.children[2];
-    var saveButton = newsArea.children[3];
-    var canselButton = newsArea.children[4];
-    var divMain = newsArea.parentNode;
-    var tegArea = divMain.children[0];
-    var article;
+    const newsArea = this.parentNode;
+    const id = newsArea.parentNode.id;
+    const header = newsArea.children[0];
+    const summary = newsArea.children[1];
+    const content = newsArea.children[2];
+    const saveButton = newsArea.children[3];
+    const canselButton = newsArea.children[4];
+    const divMain = newsArea.parentNode;
+    const tegArea = divMain.children[0];
+    let article;
     if (header.innerHTML && summary.innerHTML && content.innerHTML && tegArea.innerHTML &&
-        header.innerHTML !== "Заголовок" && summary.innerHTML !== "краткое описание" && content.innerHTML !== "Полный текст новости") {
+        header.innerHTML !== "Заголовок" && summary.innerHTML !== "краткое описание" &&
+        content.innerHTML !== "Полный текст новости") {
 
-        var tegs = tegArea.innerHTML.split(",");
-        var errorTegFlag = false;
-        if (tegs[tegs.length - 1] === "") {
+        const tegs = tegArea.innerHTML.split(",");
+        let errorTegFlag = false;
+        if (!tegs[tegs.length - 1]) {
             tegs.pop();
         }
         if (tegs.length > 5) {
@@ -146,34 +145,36 @@ function clickSaveRedactNews() {
 }
 
 function clickCanselRedactNews() {
-    var newsArea = this.parentNode;
-    var id = newsArea.parentNode.id;
-    var header = newsArea.children[0];
-    var summary = newsArea.children[1];
-    var content = newsArea.children[2];
-    var saveButton = newsArea.children[3];
-    var canselButton = newsArea.children[4];
-    var divMain = newsArea.parentNode;
-    var tegArea = divMain.children[0];
+    const newsArea = this.parentNode;
+    const id = newsArea.parentNode.id;
+    const header = newsArea.children[0];
+    const summary = newsArea.children[1];
+    const content = newsArea.children[2];
+    const saveButton = newsArea.children[3];
+    const canselButton = newsArea.children[4];
+    const divMain = newsArea.parentNode;
+    const tegArea = divMain.children[0];
 
     if (id === "temporary") {
         NEWS_VIEW.removeNews(id);
-        var addNewsButton = DOC.getElementById("add-news-button");
+        const addNewsButton = DOC.getElementById("add-news-button");
         addNewsButton.onclick = clickAddNews;
     } else {
 
         /* var tegs = tegArea.innerHTML.split(",");
          tegArea.innerHTML = "<a/>" + tegs.join("</a>  <a/>");*/
-        for (var i = 0; i < ORIGINAL_DATA_EDITING_NEWS.length; i++) {
+        let lastIndex;
+        for (let i = 0; i < ORIGINAL_DATA_EDITING_NEWS.length; i++) {
+            lastIndex = i;
             if (ORIGINAL_DATA_EDITING_NEWS[i].id === id) {
                 break;
             }
         }
-        header.innerHTML = ORIGINAL_DATA_EDITING_NEWS[i].title;
-        summary.innerHTML = ORIGINAL_DATA_EDITING_NEWS[i].summary;
-        content.innerHTML = ORIGINAL_DATA_EDITING_NEWS[i].content;
-        tegArea.innerHTML = ORIGINAL_DATA_EDITING_NEWS[i].teg;
-        ORIGINAL_DATA_EDITING_NEWS.splice(i, 1);
+        header.innerHTML = ORIGINAL_DATA_EDITING_NEWS[lastIndex].title;
+        summary.innerHTML = ORIGINAL_DATA_EDITING_NEWS[lastIndex].summary;
+        content.innerHTML = ORIGINAL_DATA_EDITING_NEWS[lastIndex].content;
+        tegArea.innerHTML = ORIGINAL_DATA_EDITING_NEWS[lastIndex].teg;
+        ORIGINAL_DATA_EDITING_NEWS.splice(lastIndex, 1);
 
         newsArea.onclick = clickForFullNews;
         header.contentEditable = summary.contentEditable = content.contentEditable = tegArea.contentEditable = false;
@@ -185,7 +186,7 @@ function clickCanselRedactNews() {
 }
 
 function goInPage() {
-    INDEX_THIS_PAGE = +this.id.split("e")[1];
+    INDEX_THIS_PAGE = Number(this.id.split("e")[1]);
 
     printFilterArticles(INDEX_THIS_PAGE * 10 - 10, INDEX_THIS_PAGE * 10);
 
@@ -193,7 +194,7 @@ function goInPage() {
         if ((this.nextSibling && this.nextSibling.disabled) || (this.previousSibling && this.previousSibling.disabled)) {
             printPagination(INDEX_THIS_PAGE);
         } else {
-            var pagesButton = this.parentNode.childNodes;
+            const pagesButton = this.parentNode.childNodes;
             pagesButton.forEach(function (item) {
                 item.className = "";
                 item.disabled = "";
@@ -206,20 +207,20 @@ function goInPage() {
     }
 }
 
-var filterButton = DOC.getElementById("filter-find-button");
+const filterButton = DOC.getElementById("filter-find-button");
 filterButton.onclick = clickFilterButton;
 function clickFilterButton() {
-    var beginDateAdded = DOC.getElementById("begin-date-added-filter");
-    var endDateAdded = DOC.getElementById("end-date-added-filter");
-    var authorName = DOC.getElementById("author-name-filter");
-    var tegsFilter = DOC.getElementById("tegs-filter");
-    var beginDateAddedValue = beginDateAdded.value;
-    var endDateAddedValue = endDateAdded.value;
-    var authorNameValue = authorName.value;
-    var tegsFilterValue = tegsFilter.value;
-    var dateBegin;
-    var dateEnd;
-    var rePrintFlag = true;
+    const beginDateAdded = DOC.getElementById("begin-date-added-filter");
+    const endDateAdded = DOC.getElementById("end-date-added-filter");
+    const authorName = DOC.getElementById("author-name-filter");
+    const tegsFilter = DOC.getElementById("tegs-filter");
+    const beginDateAddedValue = beginDateAdded.value;
+    const endDateAddedValue = endDateAdded.value;
+    const authorNameValue = authorName.value;
+    const tegsFilterValue = tegsFilter.value;
+    let dateBegin;
+    let dateEnd;
+    let rePrintFlag = true;
 
     if (beginDateAddedValue || authorNameValue || tegsFilterValue || endDateAddedValue) {
         if (beginDateAddedValue) {
@@ -243,7 +244,7 @@ function clickFilterButton() {
             dateEnd = 0;
         }
         if (rePrintFlag) {
-            var tegs = tegsFilterValue.split(",");
+            const tegs = tegsFilterValue.split(",");
             FILTER_CONFIG = {author: authorNameValue, dateBegin: dateBegin, dateEnd: dateEnd, teg: tegs};
             //new FilterConfig(authorNameValue, dateBegin, dateEnd, tegs);
             printFilterArticles();
@@ -257,22 +258,22 @@ function clickFilterButton() {
     }
 }
 
-var addNewsButton = DOC.getElementById("add-news-button");
+const addNewsButton = DOC.getElementById("add-news-button");
 addNewsButton.onclick = clickAddNews;
 function clickAddNews() {
     //var date = new Date();
-    var newId = "temporary";//date.getTime();
+    const newId = "temporary";//date.getTime();
     NEWS_VIEW.addOneNews({
         _id: newId, title: "Заголовок", summary: "краткое описание", createdAt: new Date(), author: USER,
         content: "Полный текст новости", teg: ["Теги", "через", "запятую", "максимум", "5"]
     });
     this.onclick = "";
-    var news = DOC.getElementById(newId);
+    const news = DOC.getElementById(newId);
     news.children[1].dispatchEvent(new Event("click"));
 
 }
 
-var logOffButton = DOC.getElementById("log-off-button");
+const logOffButton = DOC.getElementById("log-off-button");
 logOffButton.onclick = function () {
     USER = null;
     unLogInUser();
@@ -281,22 +282,22 @@ logOffButton.onclick = function () {
 
 };
 
-var logInButton = DOC.getElementById("log-in-button");
+const logInButton = DOC.getElementById("log-in-button");
 logInButton.onclick = function () {
     NEWS_VIEW.removeAllNews();
-    var filterButton = DOC.getElementById("filter-find-button");
-    var pagination = DOC.getElementById("pagination");
+    const filterButton = DOC.getElementById("filter-find-button");
+    const pagination = DOC.getElementById("pagination");
     pagination.innerHTML = "";
     filterButton.onclick = "";
     window.onresize = "";
 
-    var logInArea = DOC.createElement("div");
-    var title = DOC.createElement("h3");
-    var pLogin = DOC.createElement("p");
-    var nameTextarea = DOC.createElement("textarea");
-    var pPassword = DOC.createElement("p");
-    var passwordTextarea = DOC.createElement("textarea");
-    var inputLoginButton = DOC.createElement("button");
+    const logInArea = DOC.createElement("div");
+    const title = DOC.createElement("h3");
+    const pLogin = DOC.createElement("p");
+    const nameTextarea = DOC.createElement("textarea");
+    const pPassword = DOC.createElement("p");
+    const passwordTextarea = DOC.createElement("textarea");
+    const inputLoginButton = DOC.createElement("button");
 
     logInArea.id = "log-in-area";
     title.innerHTML = "Введите логин и пароль, если вы не зарегестрированы, то это произойдет автоматически.";
@@ -317,7 +318,7 @@ logInButton.onclick = function () {
     logInArea.appendChild(passwordTextarea);
     logInArea.appendChild(inputLoginButton);
 
-    var main = DOC.getElementsByTagName("main")[0];
+    const main = DOC.getElementsByTagName("main")[0];
     main.appendChild(logInArea);
 
     this.id = "log-in-button";
@@ -328,11 +329,11 @@ function loginTextareaKeyDown(event) {
 }
 
 function clickInputLoginButton() {
-    var logInArea = this.parentNode;
-    var nameTextarea = logInArea.children[2];
-    var passwordTextarea = logInArea.children[4];
-    var name = nameTextarea.value;
-    var password = passwordTextarea.value;
+    const logInArea = this.parentNode;
+    const nameTextarea = logInArea.children[2];
+    const passwordTextarea = logInArea.children[4];
+    const name = nameTextarea.value;
+    const password = passwordTextarea.value;
 
     if (name && password) {
         loginServer(name, password);

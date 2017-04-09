@@ -2,8 +2,8 @@
  * Created by Никита on 01.04.2017.
  */
 "use strict";
-var DiskDB = require('diskdb');
-var db = DiskDB.connect(__dirname + '/db', ['users']);
+const DiskDB = require('diskdb');
+const db = DiskDB.connect(__dirname + '/db', ['users']);
 
 function userInformation(login, password) {
     this.login = login;
@@ -11,7 +11,7 @@ function userInformation(login, password) {
 }
 
 function findUserOrRegister(name, password) {
-    var user = db.users.findOne({login: name});
+    const user = db.users.findOne({login: name});
 
     if (user) {
         if (user.password === password) {

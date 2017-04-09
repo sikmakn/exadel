@@ -1,12 +1,12 @@
 "use strict";
 
 function printArticles() {
-    var xhrFirstArticles = new XMLHttpRequest();
-    var firstArticles;
+    const xhrFirstArticles = new XMLHttpRequest();
+    // let firstArticles;
 
     function handler() {
-        var articlesJSON = xhrFirstArticles.responseText;
-        firstArticles = JSON.parse(articlesJSON, function (key, value) {
+        const articlesJSON = xhrFirstArticles.responseText;
+        const firstArticles = JSON.parse(articlesJSON, function (key, value) {
             if (key === "createdAt") {
                 return new Date(value);
             }
@@ -22,17 +22,15 @@ function printArticles() {
     xhrFirstArticles.send();
 }
 
-function printPagination(thisIndex) {
-    var index = thisIndex || 0;
-    var xhrArticleLength = new XMLHttpRequest();
-    var articleLength;
+function printPagination(thisIndex = 0) {
+    const xhrArticleLength = new XMLHttpRequest();
+    //let articleLength;
 
     function handler() {
-        articleLength = xhrArticleLength.responseText;
-        articleLength = +articleLength;
+        const articleLength = Number(xhrArticleLength.responseText);
         xhrArticleLength.removeEventListener('load', handler);
         ARTICLE_AMOUNT = articleLength;
-        NEWS_VIEW.createPagination(index, articleLength);
+        NEWS_VIEW.createPagination(thisIndex, articleLength);
     }
 
     xhrArticleLength.addEventListener('load', handler);
@@ -40,15 +38,14 @@ function printPagination(thisIndex) {
     xhrArticleLength.send();
 }
 
-function printFilterArticles(skip, top) {
-    var skip = skip || 0;
-    var top = top || 9;
-    var xhrArticles = new XMLHttpRequest();
-    var articles;
+function printFilterArticles(skip = 0, top = 9) {
+    const xhrArticles = new XMLHttpRequest();
+    // let articles;
 
     function handler() {
-        var articlesJSON = xhrArticles.responseText;
-        articles = JSON.parse(articlesJSON, function (key, value) {
+        const articlesJSON = xhrArticles.responseText;
+
+        const articles = JSON.parse(articlesJSON, (key, value) => {
             if (key === "createdAt") {
                 return new Date(value);
             }
@@ -58,7 +55,7 @@ function printFilterArticles(skip, top) {
         if (articles.length) {
             NEWS_VIEW.removeAllNews();
             NEWS_VIEW.printNewsList(articles);
-            if (skip === 0) {
+            if (!skip) {
                 printPagination();
             }
         } else {
@@ -79,15 +76,15 @@ function printFilterArticles(skip, top) {
 }
 
 function addNewsOnServer(article) {
-    var xhrAddArticle = new XMLHttpRequest();
-    var newArticle = JSON.stringify(article);
-    var id;
+    const xhrAddArticle = new XMLHttpRequest();
+    const newArticle = JSON.stringify(article);
+    // let id;
 
     function handler() {
-        id = xhrAddArticle.responseText;
-        var news = DOC.getElementById("temporary");
+        const id = xhrAddArticle.responseText;
+        const news = DOC.getElementById("temporary");
         news.id = id;
-        var addButton = DOC.getElementById("add-news-button");
+        const addButton = DOC.getElementById("add-news-button");
         addButton.onclick = clickAddNews;
         xhrAddArticle.removeEventListener('load', handler);
     }
@@ -99,7 +96,7 @@ function addNewsOnServer(article) {
 }
 
 function editNewsOnServer(article) {
-    var editNews = {
+    const editNews = {
         id: article.id,
         title: article.title,
         summary: article.summary,
@@ -107,8 +104,8 @@ function editNewsOnServer(article) {
         teg: article.teg
     };
 
-    editNews = JSON.stringify(editNews);
-    var xhrEditArticle = new XMLHttpRequest();
+    const editNewsJSON = JSON.stringify(editNews);
+    const xhrEditArticle = new XMLHttpRequest();
 
     function handler() {
         xhrEditArticle.removeEventListener('load', handler);
@@ -117,11 +114,11 @@ function editNewsOnServer(article) {
     xhrEditArticle.addEventListener('load', handler);
     xhrEditArticle.open('PATCH', '/editNews', true);
     xhrEditArticle.setRequestHeader('content-type', 'application/json');
-    xhrEditArticle.send(editNews);
+    xhrEditArticle.send(editNewsJSON);
 }
 
 function deleteNewsFromServer(id) {
-    var xhrDeleteArticle = new XMLHttpRequest();
+    const xhrDeleteArticle = new XMLHttpRequest();
 
     function handler() {
         xhrDeleteArticle.removeEventListener('load', handler);
@@ -133,13 +130,13 @@ function deleteNewsFromServer(id) {
 }
 
 function loginServer(name, password) {
-    var xhrLogin = new XMLHttpRequest();
+    const xhrLogin = new XMLHttpRequest();
 
     function handler() {
-        var logInArea = DOC.getElementById("log-in-area");
-        var filterButton = DOC.getElementById("filter-find-button");
-        var logOffButton = DOC.getElementById("log-off-button-log-off");
-        var answer = xhrLogin.responseText;
+        const logInArea = DOC.getElementById("log-in-area");
+        const filterButton = DOC.getElementById("filter-find-button");
+        const logOffButton = DOC.getElementById("log-off-button-log-off");
+        const answer = xhrLogin.responseText;
 
         if (answer === 'successfully_registered') {
             USER = name;

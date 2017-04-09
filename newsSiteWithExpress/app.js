@@ -1,11 +1,11 @@
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
 
-var articleModel = require('./private/articleModel.js'),
-    newsModel = new articleModel.newsModel();
+const articleModel = require('./private/articleModel.js');
+const newsModel = new articleModel.newsModel();
 
-var dataWorker = require('./private/dataBasesWork.js');
+const dataWorker = require('./private/dataBasesWork.js');
 app.use(express.static(__dirname + '/public'));
 
 app.use(bodyParser.json());
@@ -18,13 +18,13 @@ app.get('/firstNews', function (req, res) {
 });
 
 app.get('/articleLength', function (req, res) {
-    res.end("" + newsModel.articleLength);
+    res.end(String(newsModel.articleLength));
 });
 
 app.get('/getNewsFilter', function (req, res) {
     if (req.query.filter === "true") {
-        var dateBegin = 0;
-        var dateEnd = 0;
+        let dateBegin = 0;
+        let dateEnd = 0;
 
         if (req.query.dateBegin !== "0") {
             dateBegin = new Date(req.query.dateBegin);
@@ -32,11 +32,11 @@ app.get('/getNewsFilter', function (req, res) {
         if (req.query.dateEnd !== "0") {
             dateEnd = new Date(req.query.dateEnd);
         }
-        var filter = new articleModel.filter(req.query.author, dateBegin,
+        const filter = new articleModel.filter(req.query.author, dateBegin,
             dateEnd, req.query.teg.split(','));
-        res.json(newsModel.getArticles(+req.query.skip, +req.query.top, filter));
+        res.json(newsModel.getArticles(Number(req.query.skip), Number(req.query.top), filter));
     } else {
-        res.json(newsModel.getArticles(+req.query.skip, +req.query.top));
+        res.json(newsModel.getArticles(Number(req.query.skip), Number(req.query.top)));
     }
 });
 
@@ -46,15 +46,13 @@ app.delete('/deleteNews', function (req, res) {
 });
 
 app.post('/addNews', function (req, res) {
-    var article = new articleModel.Article.fromObjToArticle(req.body);
-    /*req.body.id, req.body.title, req.body.summary, new Date(req.body.createdAt),
-     req.body.author, req.body.content, req.body.teg);*/
-    var id = newsModel.addArticle(article);
+    const article = new articleModel.Article.fromObjToArticle(req.body);
+    const id = newsModel.addArticle(article);
     res.end(id);
 });
 
 app.patch('/editNews', function (req, res) {
-    var article = new articleModel.Article(req.body.id, req.body.title, req.body.summary, new Date(),
+    const article = new articleModel.Article(req.body.id, req.body.title, req.body.summary, new Date(),
         "author", req.body.content, ['teg']);
     newsModel.editArticle(req.body.id, article);
     newsModel.replaceAllTegs(req.body.id, req.body.teg);
