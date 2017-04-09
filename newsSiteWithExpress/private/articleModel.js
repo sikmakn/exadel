@@ -14,7 +14,15 @@ function Article(_id, title, summary, createdAt, author, content, teg) {
     this.teg = teg;
 
     Article.fromObjToArticle = function (obj) {
-        return new Article(obj.id, obj.title, obj.summary, new Date(obj.createdAt), obj.author, obj.content, obj.teg);
+        return new Article(
+            obj.id,
+            obj.title,
+            obj.summary,
+            new Date(obj.createdAt),
+            obj.author,
+            obj.content,
+            obj.teg
+        );
     };
 
     Article.validateArticle = function (article) {
@@ -171,14 +179,30 @@ function NewsModel() {
      teg: ["teg10", "teg1"]
      }
      ]*/db.articles.find().map(function (item) {
-        return new Article(item._id, item.title, item.summary, new Date(item.createdAt), item.author, item.content, item.teg);
+        return new Article(
+            item._id,
+            item.title,
+            item.summary,
+            new Date(item.createdAt),
+            item.author,
+            item.content,
+            item.teg
+        );
     });
 
     this.articleLength = articles.length;
 
     this.setArticles = function (articlesObjects) {
         articles = articlesObjects.map(function (item) {
-            return new Article(item._id, item.title, item.summary, new Date(item.createdAt), item.author, item.content, item.teg);
+            return new Article(
+                item._id,
+                item.title,
+                item.summary,
+                new Date(item.createdAt),
+                item.author,
+                item.content,
+                item.teg
+            );
         });
         this.articleLength = articles.length;
     };
@@ -279,14 +303,20 @@ function NewsModel() {
         if (!idArticleMass.length) {
             return false;
         }
-        return new Article(idArticleMass[0].id, idArticleMass[0].title, idArticleMass[0].summary,
-            idArticleMass[0].createdAt, idArticleMass[0].author, idArticleMass[0].content, idArticleMass[0].teg);
+        return new Article(
+            idArticleMass[0].id,
+            idArticleMass[0].title,
+            idArticleMass[0].summary,
+            idArticleMass[0].createdAt,
+            idArticleMass[0].author,
+            idArticleMass[0].content,
+            idArticleMass[0].teg
+        );
     };
 
     this.addArticle = function (article) {
-        if (!Article.validateArticle(article)) {
-            return false;
-        }
+        if (!Article.validateArticle(article)) return false;
+
         article = db.articles.save(article);
         article.createdAt = new Date(article.createdAt);
         const _id = article._id;
@@ -296,9 +326,8 @@ function NewsModel() {
     };
 
     this.editArticle = function (_id, article) {
-        if (typeof _id !== 'string' || !_id || !article) {
-            return false;
-        }
+        if (typeof _id !== 'string' || !_id || !article) return false;
+
         let index = -1;
         for (let i = 0; i < articles.length; i++) {
             if (_id === articles[i]._id) {
@@ -306,9 +335,8 @@ function NewsModel() {
                 break;
             }
         }
-        if (index < 0) {
-            return false;
-        }
+        if (index < 0) return false;
+
         const query = {
             _id: _id
         };

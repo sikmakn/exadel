@@ -258,8 +258,9 @@ function NewsView() {
 
         newsArea.className = "news-area";
         newsArea.onclick = clickForFullNews;
-        newsArea.innerHTML = "<h1 class ='news-header'>" + article.title + "</h1>" +
-            "<p class='news-summary'>" + article.summary + "</p>" + "<p class='news-full-text-unvisible'>" + article.content + "</p> ";
+        newsArea.innerHTML = `<h1 class ='news-header'>${article.title}</h1>` +
+            `<p class='news-summary'>${article.summary}</p>` +
+            `<p class='news-full-text-unvisible'>${article.content}</p> `;
 
         saveButton.innerHTML = "Сохранить";
         saveButton.onclick = clickSaveRedactNews;

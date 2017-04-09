@@ -2,14 +2,11 @@
 
 function printArticles() {
     const xhrFirstArticles = new XMLHttpRequest();
-    // let firstArticles;
 
     function handler() {
         const articlesJSON = xhrFirstArticles.responseText;
-        const firstArticles = JSON.parse(articlesJSON, function (key, value) {
-            if (key === "createdAt") {
-                return new Date(value);
-            }
+        const firstArticles = JSON.parse(articlesJSON, (key, value) => {
+            if (key === "createdAt") return new Date(value);
             return value;
         });
         xhrFirstArticles.removeEventListener('load', handler);
@@ -46,9 +43,7 @@ function printFilterArticles(skip = 0, top = 9) {
         const articlesJSON = xhrArticles.responseText;
 
         const articles = JSON.parse(articlesJSON, (key, value) => {
-            if (key === "createdAt") {
-                return new Date(value);
-            }
+            if (key === "createdAt") return new Date(value);
             return value;
         });
         xhrArticles.removeEventListener('load', handler);
@@ -66,11 +61,24 @@ function printFilterArticles(skip = 0, top = 9) {
 
     xhrArticles.addEventListener('load', handler);
     if (FILTER_CONFIG) {
-        xhrArticles.open('GET', '/getNewsFilter?skip=' + skip + '&top=' + top + '&filter=true' +
-            '&author=' + FILTER_CONFIG.author + '&dateBegin=' + FILTER_CONFIG.dateBegin +
-            '&dateEnd=' + FILTER_CONFIG.dateEnd + '&teg=' + FILTER_CONFIG.teg.join(','), true);
+        xhrArticles.open(
+            'GET',
+            '/getNewsFilter?skip=' + skip +
+            '&top=' + top +
+            '&filter=true' +
+            '&author=' + FILTER_CONFIG.author +
+            '&dateBegin=' + FILTER_CONFIG.dateBegin +
+            '&dateEnd=' + FILTER_CONFIG.dateEnd +
+            '&teg=' + FILTER_CONFIG.teg.join(','),
+            true
+        );
     } else {
-        xhrArticles.open('GET', '/getNewsFilter?skip=' + skip + '&top=' + top + '&filter=false', true);
+        xhrArticles.open(
+            'GET',
+            '/getNewsFilter?skip=' + skip +
+            '&top=' + top +
+            '&filter=false',
+            true);
     }
     xhrArticles.send();
 }
@@ -78,7 +86,6 @@ function printFilterArticles(skip = 0, top = 9) {
 function addNewsOnServer(article) {
     const xhrAddArticle = new XMLHttpRequest();
     const newArticle = JSON.stringify(article);
-    // let id;
 
     function handler() {
         const id = xhrAddArticle.responseText;

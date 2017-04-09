@@ -1,3 +1,4 @@
+"use strict";
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -52,8 +53,15 @@ app.post('/addNews', function (req, res) {
 });
 
 app.patch('/editNews', function (req, res) {
-    const article = new articleModel.Article(req.body.id, req.body.title, req.body.summary, new Date(),
-        "author", req.body.content, ['teg']);
+    const article = new articleModel.Article(
+        req.body.id,
+        req.body.title,
+        req.body.summary,
+        new Date(),
+        "author",
+        req.body.content,
+        ['teg']
+    );
     newsModel.editArticle(req.body.id, article);
     newsModel.replaceAllTegs(req.body.id, req.body.teg);
     res.end();

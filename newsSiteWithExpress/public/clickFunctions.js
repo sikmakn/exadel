@@ -51,8 +51,11 @@ function clickRedactNews() {
     const saveButton = newsArea.children[3];
     const canselButton = newsArea.children[4];
     const originalData = {
-        id: newsArea.parentNode.id, title: header.innerHTML, summary: summary.innerHTML,
-        content: content.innerHTML, teg: tegArea.innerHTML
+        id: newsArea.parentNode.id,
+        title: header.innerHTML,
+        summary: summary.innerHTML,
+        content: content.innerHTML,
+        teg: tegArea.innerHTML
     };
     ORIGINAL_DATA_EDITING_NEWS.push(originalData);
     header.contentEditable = true;
@@ -112,14 +115,20 @@ function clickSaveRedactNews() {
             errorTegFlag = true;
         } else {
             tegs.forEach(function (item) {
-                if (item === "Теги" || item === "через" || item === "запятую" || item === "максимум" || item === "пять") {
+                if (item === "Теги" || item === "через" || item === "запятую" ||
+                    item === "максимум" || item === "пять") {
                     errorTegFlag = true;
                 }
             });
             if (!errorTegFlag) {
                 article = {
-                    id: id, title: header.innerHTML, summary: summary.innerHTML,
-                    createdAt: new Date(), author: USER, content: content.innerHTML, teg: tegs
+                    id: id,
+                    title: header.innerHTML,
+                    summary: summary.innerHTML,
+                    createdAt: new Date(),
+                    author: USER,
+                    content: content.innerHTML,
+                    teg: tegs
                 };
                 tegArea.innerHTML = "<a/>" + tegs.join("</a>  <a/>");
                 if (id === "temporary") {
@@ -130,8 +139,10 @@ function clickSaveRedactNews() {
                 }
 
                 newsArea.onclick = clickForFullNews;
-                header.contentEditable = summary.contentEditable = content.contentEditable = tegArea.contentEditable = false;
-                header.style.backgroundColor = summary.style.backgroundColor = content.style.backgroundColor = tegArea.style.backgroundColor = "";
+                header.contentEditable = summary.contentEditable = false;
+                content.contentEditable = tegArea.contentEditable = false;
+                header.style.backgroundColor = summary.style.backgroundColor = "";
+                content.style.backgroundColor = tegArea.style.backgroundColor = "";
 
                 saveButton.className = "news-edit-button-unvisible";
                 canselButton.className = "news-edit-button-unvisible";
@@ -177,8 +188,10 @@ function clickCanselRedactNews() {
         ORIGINAL_DATA_EDITING_NEWS.splice(lastIndex, 1);
 
         newsArea.onclick = clickForFullNews;
-        header.contentEditable = summary.contentEditable = content.contentEditable = tegArea.contentEditable = false;
-        header.style.backgroundColor = summary.style.backgroundColor = content.style.backgroundColor = tegArea.style.backgroundColor = "";
+        header.contentEditable = summary.contentEditable = false;
+        content.contentEditable = tegArea.contentEditable = false;
+        header.style.backgroundColor = summary.style.backgroundColor = "";
+        content.style.backgroundColor = tegArea.style.backgroundColor = "";
 
         saveButton.className = "news-edit-button-unvisible";
         canselButton.className = "news-edit-button-unvisible";
@@ -191,7 +204,8 @@ function goInPage() {
     printFilterArticles(INDEX_THIS_PAGE * 10 - 10, INDEX_THIS_PAGE * 10);
 
     if (window.innerWidth > 500) {
-        if ((this.nextSibling && this.nextSibling.disabled) || (this.previousSibling && this.previousSibling.disabled)) {
+        if ((this.nextSibling && this.nextSibling.disabled) ||
+            (this.previousSibling && this.previousSibling.disabled)) {
             printPagination(INDEX_THIS_PAGE);
         } else {
             const pagesButton = this.parentNode.childNodes;
@@ -245,7 +259,12 @@ function clickFilterButton() {
         }
         if (rePrintFlag) {
             const tegs = tegsFilterValue.split(",");
-            FILTER_CONFIG = {author: authorNameValue, dateBegin: dateBegin, dateEnd: dateEnd, teg: tegs};
+            FILTER_CONFIG = {
+                author: authorNameValue,
+                dateBegin: dateBegin,
+                dateEnd: dateEnd,
+                teg: tegs
+            };
             //new FilterConfig(authorNameValue, dateBegin, dateEnd, tegs);
             printFilterArticles();
         }
@@ -264,8 +283,13 @@ function clickAddNews() {
     //var date = new Date();
     const newId = "temporary";//date.getTime();
     NEWS_VIEW.addOneNews({
-        _id: newId, title: "Заголовок", summary: "краткое описание", createdAt: new Date(), author: USER,
-        content: "Полный текст новости", teg: ["Теги", "через", "запятую", "максимум", "5"]
+        _id: newId,
+        title: "Заголовок",
+        summary: "краткое описание",
+        createdAt: new Date(),
+        author: USER,
+        content: "Полный текст новости",
+        teg: ["Теги", "через", "запятую", "максимум", "5"]
     });
     this.onclick = "";
     const news = DOC.getElementById(newId);
@@ -300,7 +324,8 @@ logInButton.onclick = function () {
     const inputLoginButton = DOC.createElement("button");
 
     logInArea.id = "log-in-area";
-    title.innerHTML = "Введите логин и пароль, если вы не зарегестрированы, то это произойдет автоматически.";
+    title.innerHTML = "Введите логин и пароль, если вы не зарегестрированы," +
+        " то это произойдет автоматически.";
     pLogin.innerHTML = "Логин:";
     pPassword.innerHTML = "Пароль";
     nameTextarea.id = "input-login";
