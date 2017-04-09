@@ -7,8 +7,8 @@ var DOC = document;
 function onresizePagination() {
     NEWS_VIEW.createPagination(INDEX_THIS_PAGE);
     if (window.innerWidth > 500) {
-        var pagesButton = DOC.getElementsByClassName("pagination-checked")[0],
-            thisPageButton = DOC.getElementById("page" + INDEX_THIS_PAGE);
+        var pagesButton = DOC.getElementsByClassName("pagination-checked")[0];
+        var thisPageButton = DOC.getElementById("page" + INDEX_THIS_PAGE);
 
         pagesButton.className = "";
         pagesButton.disabled = "";
@@ -21,8 +21,8 @@ window.onresize = onresizePagination;
 
 function clickForFullNews() {
 
-    var newsContent = this.children[2],
-        newsTitle = this.children[1];
+    var newsContent = this.children[2];
+    var newsTitle = this.children[1];
     if ("news-full-text-visible" === newsContent.className) {
         newsContent.className = "news-full-text-unvisible";
         newsTitle.className = "news-summary";
@@ -45,14 +45,14 @@ function clickRemoveNews() {
 }
 
 function clickRedactNews() {
-    var divMain = this.parentNode,
-        tegArea = divMain.children[0],
-        newsArea = divMain.children[3],
-        header = newsArea.children[0],
-        summary = newsArea.children[1],
-        content = newsArea.children[2],
-        saveButton = newsArea.children[3],
-        canselButton = newsArea.children[4];
+    var divMain = this.parentNode;
+    var tegArea = divMain.children[0];
+    var newsArea = divMain.children[3];
+    var header = newsArea.children[0];
+    var summary = newsArea.children[1];
+    var content = newsArea.children[2];
+    var saveButton = newsArea.children[3];
+    var canselButton = newsArea.children[4];
     var originalData = {
         id: newsArea.parentNode.id, title: header.innerHTML, summary: summary.innerHTML,
         content: content.innerHTML, teg: tegArea.innerHTML
@@ -90,21 +90,21 @@ function clickRedactNews() {
 }
 
 function clickSaveRedactNews() {
-    var newsArea = this.parentNode,
-        id = newsArea.parentNode.id,
-        header = newsArea.children[0],
-        summary = newsArea.children[1],
-        content = newsArea.children[2],
-        saveButton = newsArea.children[3],
-        canselButton = newsArea.children[4],
-        divMain = newsArea.parentNode,
-        tegArea = divMain.children[0],
-        article;
+    var newsArea = this.parentNode;
+    var id = newsArea.parentNode.id;
+    var header = newsArea.children[0];
+    var summary = newsArea.children[1];
+    var content = newsArea.children[2];
+    var saveButton = newsArea.children[3];
+    var canselButton = newsArea.children[4];
+    var divMain = newsArea.parentNode;
+    var tegArea = divMain.children[0];
+    var article;
     if (header.innerHTML && summary.innerHTML && content.innerHTML && tegArea.innerHTML &&
         header.innerHTML !== "Заголовок" && summary.innerHTML !== "краткое описание" && content.innerHTML !== "Полный текст новости") {
 
-        var tegs = tegArea.innerHTML.split(","),
-            errorTegFlag = false;
+        var tegs = tegArea.innerHTML.split(",");
+        var errorTegFlag = false;
         if (tegs[tegs.length - 1] === "") {
             tegs.pop();
         }
@@ -146,15 +146,15 @@ function clickSaveRedactNews() {
 }
 
 function clickCanselRedactNews() {
-    var newsArea = this.parentNode,
-        id = newsArea.parentNode.id,
-        header = newsArea.children[0],
-        summary = newsArea.children[1],
-        content = newsArea.children[2],
-        saveButton = newsArea.children[3],
-        canselButton = newsArea.children[4],
-        divMain = newsArea.parentNode,
-        tegArea = divMain.children[0];
+    var newsArea = this.parentNode;
+    var id = newsArea.parentNode.id;
+    var header = newsArea.children[0];
+    var summary = newsArea.children[1];
+    var content = newsArea.children[2];
+    var saveButton = newsArea.children[3];
+    var canselButton = newsArea.children[4];
+    var divMain = newsArea.parentNode;
+    var tegArea = divMain.children[0];
 
     if (id === "temporary") {
         NEWS_VIEW.removeNews(id);
@@ -209,17 +209,17 @@ function goInPage() {
 var filterButton = DOC.getElementById("filter-find-button");
 filterButton.onclick = clickFilterButton;
 function clickFilterButton() {
-    var beginDateAdded = DOC.getElementById("begin-date-added-filter"),
-        endDateAdded = DOC.getElementById("end-date-added-filter"),
-        authorName = DOC.getElementById("author-name-filter"),
-        tegsFilter = DOC.getElementById("tegs-filter"),
-        beginDateAddedValue = beginDateAdded.value,
-        endDateAddedValue = endDateAdded.value,
-        authorNameValue = authorName.value,
-        tegsFilterValue = tegsFilter.value,
-        dateBegin,
-        dateEnd,
-        rePrintFlag = true;
+    var beginDateAdded = DOC.getElementById("begin-date-added-filter");
+    var endDateAdded = DOC.getElementById("end-date-added-filter");
+    var authorName = DOC.getElementById("author-name-filter");
+    var tegsFilter = DOC.getElementById("tegs-filter");
+    var beginDateAddedValue = beginDateAdded.value;
+    var endDateAddedValue = endDateAdded.value;
+    var authorNameValue = authorName.value;
+    var tegsFilterValue = tegsFilter.value;
+    var dateBegin;
+    var dateEnd;
+    var rePrintFlag = true;
 
     if (beginDateAddedValue || authorNameValue || tegsFilterValue || endDateAddedValue) {
         if (beginDateAddedValue) {
@@ -284,19 +284,19 @@ logOffButton.onclick = function () {
 var logInButton = DOC.getElementById("log-in-button");
 logInButton.onclick = function () {
     NEWS_VIEW.removeAllNews();
-    var filterButton = DOC.getElementById("filter-find-button"),
-        pagination = DOC.getElementById("pagination");
+    var filterButton = DOC.getElementById("filter-find-button");
+    var pagination = DOC.getElementById("pagination");
     pagination.innerHTML = "";
     filterButton.onclick = "";
     window.onresize = "";
 
-    var logInArea = DOC.createElement("div"),
-        title = DOC.createElement("h3"),
-        pLogin = DOC.createElement("p"),
-        nameTextarea = DOC.createElement("textarea"),
-        pPassword = DOC.createElement("p"),
-        passwordTextarea = DOC.createElement("textarea"),
-        inputLoginButton = DOC.createElement("button");
+    var logInArea = DOC.createElement("div");
+    var title = DOC.createElement("h3");
+    var pLogin = DOC.createElement("p");
+    var nameTextarea = DOC.createElement("textarea");
+    var pPassword = DOC.createElement("p");
+    var passwordTextarea = DOC.createElement("textarea");
+    var inputLoginButton = DOC.createElement("button");
 
     logInArea.id = "log-in-area";
     title.innerHTML = "Введите логин и пароль, если вы не зарегестрированы, то это произойдет автоматически.";
@@ -328,11 +328,11 @@ function loginTextareaKeyDown(event) {
 }
 
 function clickInputLoginButton() {
-    var logInArea = this.parentNode,
-        nameTextarea = logInArea.children[2],
-        passwordTextarea = logInArea.children[4],
-        name = nameTextarea.value,
-        password = passwordTextarea.value;
+    var logInArea = this.parentNode;
+    var nameTextarea = logInArea.children[2];
+    var passwordTextarea = logInArea.children[4];
+    var name = nameTextarea.value;
+    var password = passwordTextarea.value;
 
     if (name && password) {
         loginServer(name, password);

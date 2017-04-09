@@ -23,8 +23,8 @@ app.get('/articleLength', function (req, res) {
 
 app.get('/getNewsFilter', function (req, res) {
     if (req.query.filter === "true") {
-        var dateBegin = 0
-            , dateEnd = 0;
+        var dateBegin = 0;
+        var dateEnd = 0;
 
         if (req.query.dateBegin !== "0") {
             dateBegin = new Date(req.query.dateBegin);
@@ -48,7 +48,7 @@ app.delete('/deleteNews', function (req, res) {
 app.post('/addNews', function (req, res) {
     var article = new articleModel.Article.fromObjToArticle(req.body);
     /*req.body.id, req.body.title, req.body.summary, new Date(req.body.createdAt),
-        req.body.author, req.body.content, req.body.teg);*/
+     req.body.author, req.body.content, req.body.teg);*/
     var id = newsModel.addArticle(article);
     res.end(id);
 });

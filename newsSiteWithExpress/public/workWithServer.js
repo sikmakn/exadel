@@ -136,9 +136,9 @@ function loginServer(name, password) {
     var xhrLogin = new XMLHttpRequest();
 
     function handler() {
-        var logInArea = DOC.getElementById("log-in-area"),
-            filterButton = DOC.getElementById("filter-find-button"),
-            logOffButton = DOC.getElementById("log-off-button-log-off");
+        var logInArea = DOC.getElementById("log-in-area");
+        var filterButton = DOC.getElementById("filter-find-button");
+        var logOffButton = DOC.getElementById("log-off-button-log-off");
         var answer = xhrLogin.responseText;
 
         if (answer === 'successfully_registered') {
