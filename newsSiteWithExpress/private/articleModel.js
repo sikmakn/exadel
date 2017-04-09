@@ -21,17 +21,16 @@ function Article(_id, title, summary, createdAt, author, content, teg) {
         if (!(article instanceof Article)) {
             return false;
         }
-        if ((typeof article._id) == 'string' && (typeof article.title) == 'string' && (typeof article.summary) == 'string'
-            && (typeof article.author) == 'string' && (typeof article.content) == 'string' && Array.isArray(article.teg)
+        if ((typeof article._id) === 'string' && (typeof article.title) === 'string' && (typeof article.summary) === 'string'
+            && (typeof article.author) === 'string' && (typeof article.content) === 'string' && Array.isArray(article.teg)
             && (article.createdAt instanceof Date)) {
 
-            if (article._id && article.title && article.summary && article.author && article.content && article.teg.length != 0 && article.teg[0]) {
-                return true;
-            }
+            return article._id && article.title && article.summary && article.author && article.content &&
+                article.teg.length !== 0 && article.teg[0];
 
-            return false;
         }
         return false;
+
     };
 };
 
@@ -190,13 +189,13 @@ function NewsModel() {
 
     function compareData(first, second) {
         return second.createdAt - first.createdAt;
-    };
+    }
 
     function getArticlesByTeg(sortedArticles, filterConfig) {
 
         if (filterConfig.teg && filterConfig.teg[0].length) {
 
-            if (typeof filterConfig.teg == 'string') {
+            if (typeof filterConfig.teg === 'string') {
                 filterConfig.teg = [filterConfig.teg];
             }
 
@@ -204,7 +203,7 @@ function NewsModel() {
                 for (var j = 0; j < filterConfig.teg.length; j++) {
                     sortedArticles = sortedArticles.filter(function (obj) {
                         for (var i = 0; i < obj.teg.length; i++) {
-                            if (obj.teg[i] == filterConfig.teg[j]) {
+                            if (obj.teg[i] === filterConfig.teg[j]) {
                                 return true;
                             }
                         }
@@ -216,19 +215,17 @@ function NewsModel() {
 
         }
         return sortedArticles;
-    };
+    }
 
     function getArticlesByAuthor(sortedArticles, filterConfig) {
-        if (filterConfig.author && typeof filterConfig.author == 'string') {
+        if (filterConfig.author && typeof filterConfig.author === 'string') {
+
             sortedArticles = articles.filter(function (obj) {
-                if (obj.author.toLowerCase() == filterConfig.author.toLowerCase()) {
-                    return true;
-                }
-                return false;
+                return obj.author.toLowerCase() === filterConfig.author.toLowerCase();
             });
         }
         return sortedArticles;
-    };
+    }
 
     function getArticlesByData(sortedArticles, filterConfig) {
 
@@ -243,20 +240,19 @@ function NewsModel() {
                 if (!filterConfig.dateEnd) {
                     return true;
                 } else {
-                    if (obj.createdAt <= filterConfig.dateEnd) {
-                        return true;
-                    }
-                    return false;
+
+                    return obj.createdAt <= filterConfig.dateEnd;
+
                 }
             }
             return false;
         });
         return sortedArticles;
-    };
+    }
 
     this.getArticles = function (skip, top, filterConfig) {
         skip = skip || 0;
-        if (!top || (top instanceof Object) || (typeof top == "string")) {
+        if (!top || (top instanceof Object) || (typeof top === "string")) {
             top = 10;
         }
         if (!(filterConfig && filterConfig instanceof FilterConfig)) {
@@ -278,17 +274,13 @@ function NewsModel() {
 
     this.getArticle = function (_id) {
         var idArticleMass = articles.filter(function (obj) {
-            if (obj._id == _id) {
-                return true;
-            }
-            return false;
+            return obj._id === _id;
         });
         if (!idArticleMass.length) {
             return false;
         }
-        var idArticle = new Article(idArticleMass[0].id, idArticleMass[0].title, idArticleMass[0].summary,
+        return new Article(idArticleMass[0].id, idArticleMass[0].title, idArticleMass[0].summary,
             idArticleMass[0].createdAt, idArticleMass[0].author, idArticleMass[0].content, idArticleMass[0].teg);
-        return idArticle;
     };
 
     this.addArticle = function (article) {
@@ -304,7 +296,7 @@ function NewsModel() {
     };
 
     this.editArticle = function (_id, article) {
-        if (typeof _id != 'string' || !_id || !article) {
+        if (typeof _id !== 'string' || !_id || !article) {
             return false;
         }
         var index = -1;
@@ -321,15 +313,15 @@ function NewsModel() {
             _id: _id
         };
         var dataToUpdate = {};
-        if ((typeof article.title) == 'string' && article.title) {
+        if ((typeof article.title) === 'string' && article.title) {
             articles[index].title = article.title;
             dataToUpdate.title = article.title;
         }
-        if ((typeof article.summary) == 'string' && article.summary) {
+        if ((typeof article.summary) === 'string' && article.summary) {
             articles[index].summary = article.summary;
             dataToUpdate.summary = article.summary;
         }
-        if ((typeof article.content) == 'string' && article.content) {
+        if ((typeof article.content) === 'string' && article.content) {
             articles[index].content = article.content;
             dataToUpdate.content = article.content;
         }
@@ -340,7 +332,7 @@ function NewsModel() {
     this.removeArticle = function (_id) {
         var index = -1;
         for (var i = 0; i < articles.length; i++) {
-            if (articles[i]._id == _id) {
+            if (articles[i]._id === _id) {
                 index = i;
                 break;
             }
@@ -349,25 +341,21 @@ function NewsModel() {
             articles.splice(index, 1);
             db.articles.remove({_id: _id});
         }
-        if (index != -1) {
-            return true;
-        }
-        return false;
+        return index !== -1;
     };
 
     function pasteTegs(index, teg) {
         //   var flagReturn = false;
         // var flagDoubleTeg;
-        if (typeof teg == 'string') {
+        if (typeof teg === 'string') {
             teg = [teg];
-
         }
         if (Array.isArray(teg)) {
             var j = 0;
             for (var i = 0; i < TEGS.length; i++) {
-                if (TEGS[i] == teg[j]) {
+                if (TEGS[i] === teg[j]) {
                     for (var k = 0; k < articles[index].teg.length; k++) {
-                        if (articles[index].teg[k] == teg[j]) {
+                        if (articles[index].teg[k] === teg[j]) {
                             // flagDoubleTeg = true;
                             return false;
                         }
@@ -376,7 +364,7 @@ function NewsModel() {
                     i = -1;
                 }
             }
-            if (j == teg.length) {
+            if (j === teg.length) {
                 teg.forEach(function (item) {
                     articles[index].teg.push(item);
                 });
@@ -384,28 +372,25 @@ function NewsModel() {
             }
         }
         return false;
-    };
+    }
 
     this.addTegs = function (_id, teg) {
         var index = -1;
-        articles.forEach(function (item, i) {
-            if (item._id == _id) {
-                index = i;
+        articles.forEach(function (item, ind) {
+            if (item._id === _id) {
+                index = ind;
             }
         });
         if (index < 0 || !teg) {
             return false;
         }
-        if (pasteTegs(index, teg)) {
-            return true;
-        }
-        return false;
+        return pasteTegs(index, teg);
     };
 
     this.removeTeg = function (_id, teg) {
         var index = -1;
         for (var i = 0; i < articles.length; i++) {
-            if (articles[i]._id == _id) {
+            if (articles[i]._id === _id) {
                 index = i;
                 break;
             }
@@ -413,10 +398,10 @@ function NewsModel() {
         if (index < 0 || articles[index].teg.length <= 1) {
             return false;
         }
-        if (teg && typeof teg == 'string') {
+        if (teg && typeof teg === 'string') {
             var flag = false;
             for (var i = 0; i < TEGS.length; i++) {
-                if (TEGS[i] == teg) {
+                if (TEGS[i] === teg) {
                     flag = true;
                     break;
                 }
@@ -424,7 +409,7 @@ function NewsModel() {
             if (flag) {
                 var indexTeg;
                 for (var i = 0; i < articles[index].teg.length; i++) {
-                    if (articles[index].teg[i] == teg) {
+                    if (articles[index].teg[i] === teg) {
                         indexTeg = i;
                     }
                 }
@@ -438,7 +423,7 @@ function NewsModel() {
 
     this.replaceAllTegs = function (_id, tegs) {
         var index = -1;
-        if (!(Array.isArray(tegs) && tegs.length != 0)) {
+        if (!(Array.isArray(tegs) && tegs.length !== 0)) {
             return false;
         }
 
@@ -463,7 +448,7 @@ function NewsModel() {
         articles[index].teg = tegs;
         return true;
     };
-};
+}
 
 exports.newsModel = NewsModel;
 exports.filter = FilterConfig;

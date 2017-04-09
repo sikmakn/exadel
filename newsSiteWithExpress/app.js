@@ -26,10 +26,10 @@ app.get('/getNewsFilter', function (req, res) {
         var dateBegin = 0
             , dateEnd = 0;
 
-        if (req.query.dateBegin != "0") {
+        if (req.query.dateBegin !== "0") {
             dateBegin = new Date(req.query.dateBegin);
         }
-        if (req.query.dateEnd != "0") {
+        if (req.query.dateEnd !== "0") {
             dateEnd = new Date(req.query.dateEnd);
         }
         var filter = new articleModel.filter(req.query.author, dateBegin,

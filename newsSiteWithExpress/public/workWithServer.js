@@ -7,7 +7,7 @@ function printArticles() {
     function handler() {
         var articlesJSON = xhrFirstArticles.responseText;
         firstArticles = JSON.parse(articlesJSON, function (key, value) {
-            if (key == "createdAt") {
+            if (key === "createdAt") {
                 return new Date(value);
             }
             return value;
@@ -15,11 +15,12 @@ function printArticles() {
         xhrFirstArticles.removeEventListener('load', handler);
         NEWS_VIEW.printNewsList(firstArticles);
         printPagination();
-    };
+    }
+
     xhrFirstArticles.addEventListener('load', handler);
     xhrFirstArticles.open('GET', '/firstNews', true);
     xhrFirstArticles.send();
-};
+}
 
 function printPagination(thisIndex) {
     var index = thisIndex || 0;
@@ -32,11 +33,12 @@ function printPagination(thisIndex) {
         xhrArticleLength.removeEventListener('load', handler);
         ARTICLE_AMOUNT = articleLength;
         NEWS_VIEW.createPagination(index, articleLength);
-    };
+    }
+
     xhrArticleLength.addEventListener('load', handler);
     xhrArticleLength.open('GET', '/articleLength', true);
     xhrArticleLength.send();
-};
+}
 
 function printFilterArticles(skip, top) {
     var skip = skip || 0;
@@ -47,7 +49,7 @@ function printFilterArticles(skip, top) {
     function handler() {
         var articlesJSON = xhrArticles.responseText;
         articles = JSON.parse(articlesJSON, function (key, value) {
-            if (key == "createdAt") {
+            if (key === "createdAt") {
                 return new Date(value);
             }
             return value;
@@ -56,14 +58,15 @@ function printFilterArticles(skip, top) {
         if (articles.length) {
             NEWS_VIEW.removeAllNews();
             NEWS_VIEW.printNewsList(articles);
-            if (skip == 0) {
+            if (skip === 0) {
                 printPagination();
             }
         } else {
             alert("Новостей соответствуищих фильтрам не найдено.");
             FILTER_CONFIG = null;
         }
-    };
+    }
+
     xhrArticles.addEventListener('load', handler);
     if (FILTER_CONFIG) {
         xhrArticles.open('GET', '/getNewsFilter?skip=' + skip + '&top=' + top + '&filter=true' +
@@ -73,7 +76,7 @@ function printFilterArticles(skip, top) {
         xhrArticles.open('GET', '/getNewsFilter?skip=' + skip + '&top=' + top + '&filter=false', true);
     }
     xhrArticles.send();
-};
+}
 
 function addNewsOnServer(article) {
     var xhrAddArticle = new XMLHttpRequest();
@@ -87,18 +90,19 @@ function addNewsOnServer(article) {
         var addButton = DOC.getElementById("add-news-button");
         addButton.onclick = clickAddNews;
         xhrAddArticle.removeEventListener('load', handler);
-    };
+    }
+
     xhrAddArticle.addEventListener('load', handler);
     xhrAddArticle.open('POST', '/addNews', true);
     xhrAddArticle.setRequestHeader('content-type', 'application/json');
     xhrAddArticle.send(newArticle);
-};
+}
 
 function editNewsOnServer(article) {
     var editNews = {
         id: article.id,
         title: article.title,
-        summary:article.summary,
+        summary: article.summary,
         content: article.content,
         teg: article.teg
     };
@@ -108,26 +112,27 @@ function editNewsOnServer(article) {
 
     function handler() {
         xhrEditArticle.removeEventListener('load', handler);
-    };
+    }
+
     xhrEditArticle.addEventListener('load', handler);
     xhrEditArticle.open('PATCH', '/editNews', true);
     xhrEditArticle.setRequestHeader('content-type', 'application/json');
     xhrEditArticle.send(editNews);
-};
+}
 
 function deleteNewsFromServer(id) {
     var xhrDeleteArticle = new XMLHttpRequest();
 
     function handler() {
         xhrDeleteArticle.removeEventListener('load', handler);
-    };
+    }
 
     xhrDeleteArticle.addEventListener('load', handler);
-    xhrDeleteArticle.open('DELETE', '/deleteNews?id='+id, true);
+    xhrDeleteArticle.open('DELETE', '/deleteNews?id=' + id, true);
     xhrDeleteArticle.send();
-};
+}
 
-function loginServer(name,password) {
+function loginServer(name, password) {
     var xhrLogin = new XMLHttpRequest();
 
     function handler() {
@@ -136,7 +141,7 @@ function loginServer(name,password) {
             logOffButton = DOC.getElementById("log-off-button-log-off");
         var answer = xhrLogin.responseText;
 
-        if(answer === 'successfully_registered'){
+        if (answer === 'successfully_registered') {
             USER = name;
             alert("Пользователь успешно зарегистрирован");
             logInArea.remove();
@@ -145,7 +150,7 @@ function loginServer(name,password) {
             logOffButton.id = "log-off-button";
             window.onresize = onresizePagination;
             filterButton.onclick = clickFilterButton;
-        }else if(answer === 'successfully_login'){
+        } else if (answer === 'successfully_login') {
             USER = name;
             logInArea.remove();
             unLogInUser();
@@ -153,13 +158,13 @@ function loginServer(name,password) {
 
             window.onresize = onresizePagination;
             filterButton.onclick = clickFilterButton;
-        }else{
+        } else {
             alert("Неверный пароль");
         }
         xhrLogin.removeEventListener('load', handler);
-    };
+    }
 
     xhrLogin.addEventListener('load', handler);
-    xhrLogin.open('GET', '/login?name='+name+'&password='+password, true);
+    xhrLogin.open('GET', '/login?name=' + name + '&password=' + password, true);
     xhrLogin.send();
 }

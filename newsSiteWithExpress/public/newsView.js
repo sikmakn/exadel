@@ -13,31 +13,34 @@ var timeOptions = {
 
 function unLogInUser() {
     var login = DOC.getElementById('login');
+    var addNewsButton;
+    var logOffButton;
+    var logInButton;
     if (!USER) {
-        var addNewsButton = DOC.getElementById("add-news-button"),
-            logOffButton = DOC.getElementById("log-off-button"),
-            logInButton = DOC.getElementById('log-in-button');
+        addNewsButton = DOC.getElementById("add-news-button");
+        logOffButton = DOC.getElementById("log-off-button");
+        logInButton = DOC.getElementById('log-in-button');
         addNewsButton.id = 'add-news-button-log-off';
         logOffButton.id = "log-off-button-log-off";
         logInButton.id = 'log-in-button-log-off';
         login.innerHTML = "войдите";
     } else {
         login.innerHTML = USER;
-        var addNewsButton = DOC.getElementById("add-news-button-log-off"),
-            logOffButton = DOC.getElementById("log-off-button-log-off"),
-            logInButton = DOC.getElementById("log-in-button-log-off");
+        addNewsButton = DOC.getElementById("add-news-button-log-off");
+        logOffButton = DOC.getElementById("log-off-button-log-off");
+        logInButton = DOC.getElementById("log-in-button-log-off");
         addNewsButton.id = "add-news-button";
         logOffButton.id = "log-off-button";
-        if(logInButton)
-        logInButton.id = "log-in-button";
+
+        if (logInButton) logInButton.id = "log-in-button";
     }
-};
+}
 
 function NewsView() {
 
     this.printNewsList = function (articles) {
-        var main = DOC.getElementsByTagName("main")[0],
-            divMain;
+        var main = DOC.getElementsByTagName("main")[0];
+        var divMain;
         articles.forEach(function (article) {
             divMain = oneNews(article);
             main.appendChild(divMain);
@@ -45,21 +48,21 @@ function NewsView() {
     };
 
     this.createPagination = function (id, articleLength) {
-        articleLength = articleLength|| ARTICLE_AMOUNT;
-        var pagination = DOC.getElementById("pagination"),
-            pageCount = Math.ceil(articleLength / 10);
+        articleLength = articleLength || ARTICLE_AMOUNT;
+        var pagination = DOC.getElementById("pagination");
+        var pageCount = Math.ceil(articleLength / 10);
 
-        if (id === undefined || typeof id == 'string' || id instanceof Object) {
+        if (id === undefined || typeof id === 'string' || id instanceof Object) {
             id = 0;
         }
         pagination.innerHTML = "";
 
         if (window.innerWidth > 500) {
-            var pageId,
-                pageIndex,
-                offsetWidth = pagination.offsetWidth - 2,
-                lengthButton = 50,
-                possibleCountIndexes = Math.floor(offsetWidth / lengthButton);
+            var pageId;
+            var pageIndex;
+            var offsetWidth = pagination.offsetWidth - 2;
+            var lengthButton = 50;
+            var possibleCountIndexes = Math.floor(offsetWidth / lengthButton);
 
             pageId = "page" + 1;
             pageIndex = DOC.createElement("button");
@@ -67,7 +70,7 @@ function NewsView() {
             pageIndex.id = pageId;
             pageIndex.onclick = goInPage;
             pageIndex.innerHTML = 1;
-            if(id===1||id===0) {
+            if (id === 1 || id === 0) {
                 pageIndex.className = "pagination-checked";
                 pageIndex.disabled = "disabled";
             }
@@ -76,9 +79,9 @@ function NewsView() {
             if (id < Math.ceil(possibleCountIndexes / 2)) {
 
                 var limit = possibleCountIndexes - 1;
-                if (pageCount == possibleCountIndexes) {
+                if (pageCount === possibleCountIndexes) {
                     limit = possibleCountIndexes;
-                } else if (pageCount == 1) {
+                } else if (pageCount === 1) {
                     limit += 2;
                 }
 
@@ -89,7 +92,7 @@ function NewsView() {
                     pageIndex.id = pageId;
                     pageIndex.onclick = goInPage;
                     pageIndex.innerHTML = i;
-                    if(id===i) {
+                    if (id === i) {
                         pageIndex.className = "pagination-checked";
                         pageIndex.disabled = "disabled";
                     }
@@ -106,8 +109,8 @@ function NewsView() {
                     pagination.appendChild(pageIndex);
                 }
 
-                var start = id - Math.ceil(possibleCountIndexes / 2) + 2,
-                    limit = Math.ceil(possibleCountIndexes / 2) + id - 2;
+                var start = id - Math.ceil(possibleCountIndexes / 2) + 2;
+                var limit = Math.ceil(possibleCountIndexes / 2) + id - 2;
 
                 if (id >= pageCount - possibleCountIndexes / 2) {
                     start = pageCount - possibleCountIndexes + 3;
@@ -121,7 +124,7 @@ function NewsView() {
                     pageIndex.id = pageId;
                     pageIndex.onclick = goInPage;
                     pageIndex.innerHTML = i;
-                    if(id===i) {
+                    if (id === i) {
                         pageIndex.className = "pagination-checked";
                         pageIndex.disabled = "disabled";
                     }
@@ -130,7 +133,7 @@ function NewsView() {
             }
 
             if (i < pageCount) {
-                if (pageCount != possibleCountIndexes && id != pageCount) {
+                if (pageCount !== possibleCountIndexes && id !== pageCount) {
                     pageIndex = DOC.createElement("button");
                     pageIndex.href = "javascript:void(0)";
                     pageIndex.disabled = "disabled";
@@ -141,7 +144,7 @@ function NewsView() {
                 pageIndex = DOC.createElement("button");
                 pageIndex.href = "javascript:void(0)";
                 pageIndex.id = pageId;
-                if(id===pageCount) {
+                if (id === pageCount) {
                     pageIndex.className = "pagination-checked";
                     pageIndex.disabled = "disabled";
                 }
@@ -150,10 +153,10 @@ function NewsView() {
                 pagination.appendChild(pageIndex);
             }
         } else {
-            if (id == 0) {
+            if (id === 0) {
                 id++;
             }
-            if (id != 1) {
+            if (id !== 1) {
                 pageId = "page" + (id - 1);
                 pageIndex = DOC.createElement("button");
                 pageIndex.href = "javascript:void(0)";
@@ -169,7 +172,7 @@ function NewsView() {
                 pagination.appendChild(pageIndex);
             }
 
-            if (id != pageCount) {
+            if (id !== pageCount) {
                 pageId = "page" + (id + 1);
                 pageIndex = DOC.createElement("button");
                 pageIndex.href = "javascript:void(0)";
@@ -188,9 +191,9 @@ function NewsView() {
     };
 
     this.addOneNews = function (article) {
-        var main = DOC.getElementsByTagName('main')[0],
-            divMain = oneNews(article),
-            firstDivInMain = main.children[1];
+        var main = DOC.getElementsByTagName('main')[0];
+        var divMain = oneNews(article);
+        var firstDivInMain = main.children[1];
         main.insertBefore(divMain, firstDivInMain);
     };
 
@@ -207,11 +210,11 @@ function NewsView() {
     };
 
     this.editNews = function (id, article) {
-        var news = DOC.getElementById(id),
-            newsArea = news.children[3],
-            title = newsArea.children[0],
-            summary = newsArea.children[1],
-            content = newsArea.children[2];
+        var news = DOC.getElementById(id);
+        var newsArea = news.children[3];
+        var title = newsArea.children[0];
+        var summary = newsArea.children[1];
+        var content = newsArea.children[2];
         title.innerHTML = article.title;
         summary.innerHTML = article.summary;
         content.innerHTML = article.content;
@@ -223,15 +226,15 @@ function NewsView() {
     };
 
     function oneNews(article) {
-        var divMain = DOC.createElement("div"),
-            divTegs = DOC.createElement("div"),
-            buttonRedact = DOC.createElement("button"),
-            buttonDelete = DOC.createElement("button"),
-            newsArea = DOC.createElement("a"),
-            divAuthor = DOC.createElement('div'),
-            divDate = DOC.createElement('div'),
-            saveButton = DOC.createElement("button"),
-            canselButton = DOC.createElement("button");
+        var divMain = DOC.createElement("div");
+        var divTegs = DOC.createElement("div");
+        var buttonRedact = DOC.createElement("button");
+        var buttonDelete = DOC.createElement("button");
+        var newsArea = DOC.createElement("a");
+        var divAuthor = DOC.createElement('div');
+        var divDate = DOC.createElement('div');
+        var saveButton = DOC.createElement("button");
+        var canselButton = DOC.createElement("button");
 
         divMain.id = article._id;
         divMain.className = "one-news";
@@ -279,7 +282,7 @@ function NewsView() {
         divMain.appendChild(divAuthor);
         divMain.appendChild(divDate);
         return divMain;
-    };
+    }
 
-};
+}
 

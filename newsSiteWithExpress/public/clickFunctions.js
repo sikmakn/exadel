@@ -16,7 +16,7 @@ function onresizePagination() {
         thisPageButton.disabled = "disabled";
     }
 
-};
+}
 window.onresize = onresizePagination;
 
 function clickForFullNews() {
@@ -31,18 +31,18 @@ function clickForFullNews() {
         newsTitle.className = "news-summary-at-full";
     }
 
-};
+}
 
 function clickRemoveNews() {
     if (confirm("Вы действительно хотите удалить эту новость?")) {
         var id = this.parentNode.id;
-       /* if (!removeArticle("" + id)) {
-            alert("Новость не удалось удалить");
-        }*/
-       deleteNewsFromServer(id);
+        /* if (!removeArticle("" + id)) {
+         alert("Новость не удалось удалить");
+         }*/
+        deleteNewsFromServer(id);
         NEWS_VIEW.removeNews(id);
     }
-};
+}
 
 function clickRedactNews() {
     var divMain = this.parentNode,
@@ -53,8 +53,10 @@ function clickRedactNews() {
         content = newsArea.children[2],
         saveButton = newsArea.children[3],
         canselButton = newsArea.children[4];
-    var originalData = {id: newsArea.parentNode.id ,title:header.innerHTML, summary:summary.innerHTML,
-        content:content.innerHTML, teg: tegArea.innerHTML};
+    var originalData = {
+        id: newsArea.parentNode.id, title: header.innerHTML, summary: summary.innerHTML,
+        content: content.innerHTML, teg: tegArea.innerHTML
+    };
     ORIGINAL_DATA_EDITING_NEWS.push(originalData);
     header.contentEditable = true;
     summary.contentEditable = true;
@@ -68,7 +70,7 @@ function clickRedactNews() {
                 tegsString += tegArea.children[i].innerHTML + ",";
         }
         tegArea.innerHTML = tegsString;
-        if ("news-full-text-unvisible" == content.className) {
+        if ("news-full-text-unvisible" === content.className) {
             newsArea.dispatchEvent(new Event("click"));
         }
 
@@ -85,7 +87,7 @@ function clickRedactNews() {
 
         newsArea.onclick = "";
     }
-};
+}
 
 function clickSaveRedactNews() {
     var newsArea = this.parentNode,
@@ -103,7 +105,7 @@ function clickSaveRedactNews() {
 
         var tegs = tegArea.innerHTML.split(","),
             errorTegFlag = false;
-        if (tegs[tegs.length - 1] == "") {
+        if (tegs[tegs.length - 1] === "") {
             tegs.pop();
         }
         if (tegs.length > 5) {
@@ -116,8 +118,10 @@ function clickSaveRedactNews() {
                 }
             });
             if (!errorTegFlag) {
-                article = {id: id , title: header.innerHTML,summary: summary.innerHTML,
-                    createdAt: new Date(),author: USER,content: content.innerHTML,teg: tegs};
+                article = {
+                    id: id, title: header.innerHTML, summary: summary.innerHTML,
+                    createdAt: new Date(), author: USER, content: content.innerHTML, teg: tegs
+                };
                 tegArea.innerHTML = "<a/>" + tegs.join("</a>  <a/>");
                 if (id === "temporary") {
                     addNewsOnServer(article);
@@ -139,7 +143,7 @@ function clickSaveRedactNews() {
     } else {
         alert("Не все поля заполнены.");
     }
-};
+}
 
 function clickCanselRedactNews() {
     var newsArea = this.parentNode,
@@ -152,19 +156,19 @@ function clickCanselRedactNews() {
         divMain = newsArea.parentNode,
         tegArea = divMain.children[0];
 
-    if (id==="temporary") {
+    if (id === "temporary") {
         NEWS_VIEW.removeNews(id);
         var addNewsButton = DOC.getElementById("add-news-button");
         addNewsButton.onclick = clickAddNews;
     } else {
 
-       /* var tegs = tegArea.innerHTML.split(",");
-        tegArea.innerHTML = "<a/>" + tegs.join("</a>  <a/>");*/
-       for(var i = 0; i < ORIGINAL_DATA_EDITING_NEWS.length; i++){
-           if(ORIGINAL_DATA_EDITING_NEWS[i].id===id){
-               break;
-           }
-       }
+        /* var tegs = tegArea.innerHTML.split(",");
+         tegArea.innerHTML = "<a/>" + tegs.join("</a>  <a/>");*/
+        for (var i = 0; i < ORIGINAL_DATA_EDITING_NEWS.length; i++) {
+            if (ORIGINAL_DATA_EDITING_NEWS[i].id === id) {
+                break;
+            }
+        }
         header.innerHTML = ORIGINAL_DATA_EDITING_NEWS[i].title;
         summary.innerHTML = ORIGINAL_DATA_EDITING_NEWS[i].summary;
         content.innerHTML = ORIGINAL_DATA_EDITING_NEWS[i].content;
@@ -178,12 +182,10 @@ function clickCanselRedactNews() {
         saveButton.className = "news-edit-button-unvisible";
         canselButton.className = "news-edit-button-unvisible";
     }
-};
+}
 
 function goInPage() {
     INDEX_THIS_PAGE = +this.id.split("e")[1];
-    var id = this.id,
-        parent = this.parentNode;
 
     printFilterArticles(INDEX_THIS_PAGE * 10 - 10, INDEX_THIS_PAGE * 10);
 
@@ -202,7 +204,7 @@ function goInPage() {
     } else {
         printPagination(INDEX_THIS_PAGE);
     }
-};
+}
 
 var filterButton = DOC.getElementById("filter-find-button");
 filterButton.onclick = clickFilterButton;
@@ -215,7 +217,6 @@ function clickFilterButton() {
         endDateAddedValue = endDateAdded.value,
         authorNameValue = authorName.value,
         tegsFilterValue = tegsFilter.value,
-        articles,
         dateBegin,
         dateEnd,
         rePrintFlag = true;
@@ -242,7 +243,7 @@ function clickFilterButton() {
             dateEnd = 0;
         }
         if (rePrintFlag) {
-            var tegs = tegsFilterValue.split(", ");
+            var tegs = tegsFilterValue.split(",");
             FILTER_CONFIG = {author: authorNameValue, dateBegin: dateBegin, dateEnd: dateEnd, teg: tegs};
             //new FilterConfig(authorNameValue, dateBegin, dateEnd, tegs);
             printFilterArticles();
@@ -254,7 +255,7 @@ function clickFilterButton() {
         FILTER_CONFIG = null;
         printArticles();
     }
-};
+}
 
 var addNewsButton = DOC.getElementById("add-news-button");
 addNewsButton.onclick = clickAddNews;
@@ -269,7 +270,7 @@ function clickAddNews() {
     var news = DOC.getElementById(newId);
     news.children[1].dispatchEvent(new Event("click"));
 
-};
+}
 
 var logOffButton = DOC.getElementById("log-off-button");
 logOffButton.onclick = function () {
@@ -323,10 +324,7 @@ logInButton.onclick = function () {
 };
 
 function loginTextareaKeyDown(event) {
-    if (event.keyCode == 13) {
-        return false;
-    }
-    return true;
+    return event.keyCode !== 13;
 }
 
 function clickInputLoginButton() {

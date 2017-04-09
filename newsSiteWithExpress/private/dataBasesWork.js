@@ -8,7 +8,7 @@ var db = DiskDB.connect(__dirname + '/db', ['users']);
 function userInformation(login, password) {
     this.login = login;
     this.password = password;
-};
+}
 
 function findUserOrRegister(name, password) {
     var user = db.users.findOne({login: name});
@@ -23,6 +23,6 @@ function findUserOrRegister(name, password) {
         db.users.save(new userInformation(name, password));
         return 'successfully_registered';
     }
-};
+}
 
 exports.findUserOrRegister = findUserOrRegister;

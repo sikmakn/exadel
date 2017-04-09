@@ -193,7 +193,6 @@ main {
 }
 
 #pagination p {
-    margin: 0;
     padding: 0;
     float: left;
     margin-right: 2%;
@@ -264,7 +263,7 @@ main {
 }
 
 .news-area:hover {
-    box-shadow: 0px 0px 20px;
+    box-shadow: 0 0 20px;
 }
 
 .news-header {
@@ -310,7 +309,7 @@ main {
     display: block;
 
     border-style: solid;
-    padding: 0px;
+    padding: 0;
     margin-right: 4px;
     margin-bottom: 5px;
     height: 30px;
