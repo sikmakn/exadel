@@ -29,12 +29,23 @@ function Article(_id, title, summary, createdAt, author, content, teg) {
         if (!(article instanceof Article)) {
             return false;
         }
-        if ((typeof article._id) === 'string' && (typeof article.title) === 'string' && (typeof article.summary) === 'string'
-            && (typeof article.author) === 'string' && (typeof article.content) === 'string' && Array.isArray(article.teg)
-            && (article.createdAt instanceof Date)) {
+        if (
+            (typeof article._id) === 'string' &&
+            (typeof article.title) === 'string' &&
+            (typeof article.summary) === 'string' &&
+            (typeof article.author) === 'string' &&
+            (typeof article.content) === 'string' &&
+            Array.isArray(article.teg) &&
+            (article.createdAt instanceof Date)
+        ) {
 
-            return article._id && article.title && article.summary && article.author && article.content &&
-                article.teg.length !== 0 && article.teg[0];
+            return article._id &&
+                article.title &&
+                article.summary &&
+                article.author &&
+                article.content &&
+                article.teg.length !== 0 &&
+                article.teg[0];
 
         }
         return false;
@@ -242,16 +253,25 @@ function NewsModel() {
     }
 
     function getArticlesByAuthor(sortedArticles, filterConfig) {
-        if (!(filterConfig.author && typeof filterConfig.author === 'string'))  return sortedArticles;
+        if (!(filterConfig.author && typeof filterConfig.author === 'string')) {
+            return sortedArticles;
+        }
 
-        sortedArticles = articles.filter((obj) => obj.author.toLowerCase() === filterConfig.author.toLowerCase());
+        sortedArticles = articles.filter(
+            (obj) =>
+            obj.author.toLowerCase() === filterConfig.author.toLowerCase()
+        );
         return sortedArticles;
     }
 
     function getArticlesByData(sortedArticles, filterConfig) {
 
-        if (filterConfig.dateBegin !== 0 && !(filterConfig.dateBegin instanceof Date)) return sortedArticles;
-        if (filterConfig.dateEnd !== 0 && !(filterConfig.dateEnd instanceof Date)) return sortedArticles;
+        if (filterConfig.dateBegin !== 0 && !(filterConfig.dateBegin instanceof Date)) {
+            return sortedArticles;
+        }
+        if (filterConfig.dateEnd !== 0 && !(filterConfig.dateEnd instanceof Date)) {
+            return sortedArticles;
+        }
 
         sortedArticles = sortedArticles.filter(function (obj) {
             if (obj.createdAt < filterConfig.dateBegin) return false;
