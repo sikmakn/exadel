@@ -40,11 +40,20 @@ function unLogInUser() {
 function NewsView() {
 
     this.printNewsList = function (articles) {
-        const main = DOC.getElementsByTagName("main")[0];
+        const allNewsArea = DOC.getElementById('allNewsArea');
+
         articles.forEach(function (article) {
             const divMain = oneNews(article);
-            main.appendChild(divMain);
+            allNewsArea.appendChild(divMain);
         });
+
+        allNewsArea.onclick = (event) => {
+            const actionKey = event.target.getAttribute('data-action');
+            const action = actions[actionKey];
+            if (action) {
+                action(event);
+            }
+        }
     };
 
     this.createPagination = function (id, articleLength = ARTICLE_AMOUNT) {
@@ -193,10 +202,10 @@ function NewsView() {
     };
 
     this.addOneNews = function (article) {
-        const main = DOC.getElementsByTagName('main')[0];
+        const allNewsArea = DOC.getElementById('allNewsArea');
         const divMain = oneNews(article);
-        const firstDivInMain = main.children[1];
-        main.insertBefore(divMain, firstDivInMain);
+        const firstDivInMain = allNewsArea.children[0];
+        allNewsArea.insertBefore(divMain, firstDivInMain);
     };
 
     this.removeNews = function (id) {
@@ -213,10 +222,10 @@ function NewsView() {
 
     this.editNews = function (id, article) {
         const news = DOC.getElementById(id);
-        const newsArea = news.children[3];
-        const title = newsArea.children[0];
-        const summary = newsArea.children[1];
-        const content = newsArea.children[2];
+        const title = news.querySelector('*[data-id="title"]');
+        const summary = news.querySelector('*[data-id="summary"]');
+        const content = news.querySelector('*[data-id="content"]');
+
         title.innerHTML = article.title;
         summary.innerHTML = article.summary;
         content.innerHTML = article.content;
@@ -227,12 +236,31 @@ function NewsView() {
         divTegs.innerHTML = "<a href='error.html'/> " + tegs.join("</a>  <a href='error.html'/> ");
     };
 
+    const actions = {
+        'editNews': function (event) {
+            const redactButton = event.target;
+            actionRedactNews(redactButton);
+        },
+        'removeNews': function (event) {
+            const removeButton = event.target;
+            actionRemoveNews(removeButton);
+        },
+        'canselRedact': function (event) {
+            const canselButton = event.target;
+            actionCanselRedactNews(canselButton);
+        },
+        'saveRedact': function (event) {
+            const saveButton = event.target;
+            actionSaveRedactNews(saveButton);
+        }
+    };
+
     function oneNews(article) {
         const divMain = DOC.createElement("div");
         const divTegs = DOC.createElement("div");
         const buttonRedact = DOC.createElement("button");
         const buttonDelete = DOC.createElement("button");
-        const newsArea = DOC.createElement("a");
+        const newsArea = DOC.createElement("div");
         const divAuthor = DOC.createElement('div');
         const divDate = DOC.createElement('div');
         const saveButton = DOC.createElement("button");
@@ -242,6 +270,7 @@ function NewsView() {
         divMain.className = "one-news";
 
         divTegs.id = "teg-" + article._id;
+        divTegs.setAttribute('data-id','tegArea');
         divTegs.innerHTML = "<a/>" + article.teg.join("</a>  <a/>");
         if (USER) {
             divTegs.className = "teg-area";
@@ -253,22 +282,27 @@ function NewsView() {
             buttonDelete.className = "delete-news-button-log-off";
         }
 
-        buttonRedact.onclick = clickRedactNews;
-        buttonDelete.onclick = clickRemoveNews;
+        buttonRedact.setAttribute('data-action', 'editNews');
+        buttonDelete.setAttribute('data-action', 'removeNews');
+        buttonRedact.setAttribute('data-id', 'editButton');
+        buttonDelete.setAttribute('data-id', 'removeButton');
 
         newsArea.className = "news-area";
         newsArea.onclick = clickForFullNews;
-        newsArea.innerHTML = `<h1 class ='news-header'>${article.title}</h1>` +
-            `<p class='news-summary'>${article.summary}</p>` +
-            `<p class='news-full-text-unvisible'>${article.content}</p> `;
+        newsArea.setAttribute('data-id','newsArea');
+        newsArea.innerHTML = `<h1 class='news-header' data-id='title'>${article.title}</h1>` +
+            `<p class='news-summary' data-id='summary'>${article.summary}</p>` +
+            `<p class='news-full-text-unvisible' data-id='content'>${article.content}</p> `;
 
         saveButton.innerHTML = "Сохранить";
-        saveButton.onclick = clickSaveRedactNews;
+        saveButton.setAttribute('data-action', 'saveRedact');
+        saveButton.setAttribute('data-id','saveButton');
         saveButton.className = "news-edit-button-unvisible";
         newsArea.appendChild(saveButton);
 
         canselButton.innerHTML = "Отмена";
-        canselButton.onclick = clickCanselRedactNews;
+        canselButton.setAttribute('data-action', 'canselRedact');
+        canselButton.setAttribute('data-id','canselButton');
         canselButton.className = "news-edit-button-unvisible";
         newsArea.appendChild(canselButton);
 

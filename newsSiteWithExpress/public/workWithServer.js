@@ -21,7 +21,6 @@ function printArticles() {
 
 function printPagination(thisIndex = 0) {
     const xhrArticleLength = new XMLHttpRequest();
-    //let articleLength;
 
     function handler() {
         const articleLength = Number(xhrArticleLength.responseText);

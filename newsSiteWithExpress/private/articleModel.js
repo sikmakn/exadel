@@ -373,8 +373,6 @@ function NewsModel() {
     };
 
     function pasteTegs(index, teg) {
-        //   var flagReturn = false;
-        // var flagDoubleTeg;
         if (typeof teg === 'string') {
             teg = [teg];
         }
@@ -384,7 +382,6 @@ function NewsModel() {
                 if (TEGS[i] === teg[j]) {
                     for (let k = 0; k < articles[index].teg.length; k++) {
                         if (articles[index].teg[k] === teg[j]) {
-                            // flagDoubleTeg = true;
                             return false;
                         }
                     }
@@ -466,12 +463,7 @@ function NewsModel() {
             return false;
         }
 
-        // var vrem = articles[index].teg;
         articles[index].teg = [];
-        /*  if (!pasteTegs(id, tegs)) {
-         articles[index].teg = vrem;
-         return false;
-         }*/
         db.articles.update({_id: _id}, {teg: tegs});
         articles[index].teg = tegs;
         return true;
