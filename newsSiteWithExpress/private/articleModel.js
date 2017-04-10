@@ -242,43 +242,29 @@ function NewsModel() {
     }
 
     function getArticlesByAuthor(sortedArticles, filterConfig) {
-        if (filterConfig.author && typeof filterConfig.author === 'string') {
+        if (!(filterConfig.author && typeof filterConfig.author === 'string'))  return sortedArticles;
 
-            sortedArticles = articles.filter(function (obj) {
-                return obj.author.toLowerCase() === filterConfig.author.toLowerCase();
-            });
-        }
+        sortedArticles = articles.filter((obj) => obj.author.toLowerCase() === filterConfig.author.toLowerCase());
         return sortedArticles;
     }
 
     function getArticlesByData(sortedArticles, filterConfig) {
 
-        if (filterConfig.dateBegin !== 0 && !(filterConfig.dateBegin instanceof Date)) {
-            return sortedArticles;
-        }
-        if (filterConfig.dateEnd !== 0 && !(filterConfig.dateEnd instanceof Date)) {
-            return sortedArticles;
-        }
+        if (filterConfig.dateBegin !== 0 && !(filterConfig.dateBegin instanceof Date)) return sortedArticles;
+        if (filterConfig.dateEnd !== 0 && !(filterConfig.dateEnd instanceof Date)) return sortedArticles;
+
         sortedArticles = sortedArticles.filter(function (obj) {
-            if (obj.createdAt >= filterConfig.dateBegin) {
-                if (!filterConfig.dateEnd) {
-                    return true;
-                } else {
+            if (obj.createdAt < filterConfig.dateBegin) return false;
 
-                    return obj.createdAt <= filterConfig.dateEnd;
+            if (!filterConfig.dateEnd) return true;
 
-                }
-            }
-            return false;
+            return obj.createdAt === filterConfig.dateEnd;
+
         });
         return sortedArticles;
     }
 
-    this.getArticles = function (skip, top, filterConfig) {
-        skip = skip || 0;
-        if (!top || (top instanceof Object) || (typeof top === "string")) {
-            top = 10;
-        }
+    this.getArticles = function (skip = 0, top = 10, filterConfig) {
         if (!(filterConfig && filterConfig instanceof FilterConfig)) {
             filterConfig = new FilterConfig("", 0, 0);
         }
@@ -297,12 +283,9 @@ function NewsModel() {
     };
 
     this.getArticle = function (_id) {
-        const idArticleMass = articles.filter(function (obj) {
-            return obj._id === _id;
-        });
-        if (!idArticleMass.length) {
-            return false;
-        }
+        const idArticleMass = articles.filter((obj) => obj._id === _id);
+        if (!idArticleMass.length) return false;
+
         return new Article(
             idArticleMass[0].id,
             idArticleMass[0].title,
@@ -341,15 +324,15 @@ function NewsModel() {
             _id: _id
         };
         const dataToUpdate = {};
-        if ((typeof article.title) === 'string' && article.title) {
+        if (article.title) {
             articles[index].title = article.title;
             dataToUpdate.title = article.title;
         }
-        if ((typeof article.summary) === 'string' && article.summary) {
+        if (article.summary) {
             articles[index].summary = article.summary;
             dataToUpdate.summary = article.summary;
         }
-        if ((typeof article.content) === 'string' && article.content) {
+        if (article.content) {
             articles[index].content = article.content;
             dataToUpdate.content = article.content;
         }
@@ -365,37 +348,36 @@ function NewsModel() {
                 break;
             }
         }
-        if (index >= 0) {
-            articles.splice(index, 1);
-            db.articles.remove({_id: _id});
-        }
-        return index !== -1;
+
+        if (index < 0)  return false;
+
+        articles.splice(index, 1);
+        db.articles.remove({_id: _id});
+        return true;
     };
 
     function pasteTegs(index, teg) {
         if (typeof teg === 'string') {
             teg = [teg];
         }
-        if (Array.isArray(teg)) {
-            let j = 0;
-            for (let i = 0; i < TEGS.length; i++) {
-                if (TEGS[i] === teg[j]) {
-                    for (let k = 0; k < articles[index].teg.length; k++) {
-                        if (articles[index].teg[k] === teg[j]) {
-                            return false;
-                        }
+        if (!Array.isArray(teg)) return false;
+        let j = 0;
+        for (let i = 0; i < TEGS.length; i++) {
+            if (TEGS[i] === teg[j]) {
+                for (let k = 0; k < articles[index].teg.length; k++) {
+                    if (articles[index].teg[k] === teg[j]) {
+                        return false;
                     }
-                    j++;
-                    i = -1;
                 }
-            }
-            if (j === teg.length) {
-                teg.forEach(function (item) {
-                    articles[index].teg.push(item);
-                });
-                return true;
+                j++;
+                i = -1;
             }
         }
+        if (j === teg.length) {
+            teg.forEach((item) => articles[index].teg.push(item));
+            return true;
+        }
+
         return false;
     }
 
@@ -406,9 +388,8 @@ function NewsModel() {
                 index = ind;
             }
         });
-        if (index < 0 || !teg) {
-            return false;
-        }
+        if (index < 0 || !teg) return false;
+
         return pasteTegs(index, teg);
     };
 
@@ -420,37 +401,34 @@ function NewsModel() {
                 break;
             }
         }
-        if (index < 0 || articles[index].teg.length <= 1) {
-            return false;
-        }
-        if (teg && typeof teg === 'string') {
-            let flag = false;
-            for (let i = 0; i < TEGS.length; i++) {
-                if (TEGS[i] === teg) {
-                    flag = true;
-                    break;
-                }
+        if (index < 0 || articles[index].teg.length <= 1) return false;
+
+        if (!(teg && typeof teg === 'string')) return false;
+
+        let flag = false;
+        for (let i = 0; i < TEGS.length; i++) {
+            if (TEGS[i] === teg) {
+                flag = true;
+                break;
             }
-            if (flag) {
-                let indexTeg;
-                for (let i = 0; i < articles[index].teg.length; i++) {
-                    if (articles[index].teg[i] === teg) {
-                        indexTeg = i;
-                    }
-                }
-                articles[index].teg.splice(indexTeg, 1);
-                return true;
-            }
-            return false;
         }
-        return false;
+
+        if (!flag) return false;
+
+        let indexTeg;
+        for (let i = 0; i < articles[index].teg.length; i++) {
+            if (articles[index].teg[i] === teg) {
+                indexTeg = i;
+            }
+        }
+        articles[index].teg.splice(indexTeg, 1);
+        return true;
+
     };
 
     this.replaceAllTegs = function (_id, tegs) {
         let index = -1;
-        if (!(Array.isArray(tegs) && tegs.length)) {
-            return false;
-        }
+        if (!(Array.isArray(tegs) && tegs.length)) return false;
 
         for (let i = 0; i < articles.length; i++) {
             if (articles[i]._id === _id) {
@@ -459,9 +437,7 @@ function NewsModel() {
             }
         }
 
-        if (index < 0) {
-            return false;
-        }
+        if (index < 0) return false;
 
         articles[index].teg = [];
         db.articles.update({_id: _id}, {teg: tegs});
