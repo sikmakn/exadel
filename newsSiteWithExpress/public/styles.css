@@ -85,7 +85,7 @@ header button {
     display: block;
 }
 
-.teg-area-log-off {
+.tag-area-log-off {
     overflow: auto;
     float: left;
     width: 100%;
@@ -228,7 +228,7 @@ main {
     background-color: darkgrey;
 }
 /*Текст, теги и развернуть*/
-.teg-area {
+.tag-area {
     float: left;
     width: calc(100% - 60px);
     height: 50px;

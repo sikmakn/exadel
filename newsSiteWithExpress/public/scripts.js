@@ -1,9 +1,9 @@
 /**
  * Created by Никита on 01.03.2017.
  */
-"use strict";
 
-/*CONTROLLER*/
+
+/* CONTROLLER*/
 
 let USER = null;
 
@@ -14,7 +14,7 @@ let ARTICLE_AMOUNT;
 const ORIGINAL_DATA_EDITING_NEWS = [];
 const NEWS_VIEW = new NewsView();
 
-/*function addArticle(newArticle) {
+/* function addArticle(newArticle) {
  if (NEWS_MODEL.addArticle(newArticle)) {
  NEWS_VIEW.addOneNews(newArticle);
  return true;
@@ -50,6 +50,6 @@ const NEWS_VIEW = new NewsView();
  return false;
  };
  */
-///////
+// /////
 unLogInUser();
 printArticles();
