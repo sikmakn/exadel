@@ -18,21 +18,21 @@ function printArticles() {
 }
 
 function printPagination(thisIndex = 0) {
-  const xhrArticleLength = new XMLHttpRequest();
+  const xhrArticlesLength = new XMLHttpRequest();
 
   function handler() {
-    const articleLength = Number(xhrArticleLength.responseText);
-    xhrArticleLength.removeEventListener('load', handler);
-    ARTICLE_AMOUNT = articleLength;
-    NEWS_VIEW.createPagination(thisIndex, articleLength);
+    const articlesLength = Number(xhrArticlesLength.responseText);
+    xhrArticlesLength.removeEventListener('load', handler);
+    ARTICLE_AMOUNT = articlesLength;
+    NEWS_VIEW.createPagination(thisIndex, articlesLength);
   }
 
-  xhrArticleLength.addEventListener('load', handler);
-  xhrArticleLength.open('GET', '/articleLength', true);
-  xhrArticleLength.send();
+  xhrArticlesLength.addEventListener('load', handler);
+  xhrArticlesLength.open('GET', '/articlesLength', true);
+  xhrArticlesLength.send();
 }
 
-function printFilterArticles(skip = 0, top = 9) {
+function printFilterArticles(skip = 0, top = 10) {
   const xhrArticles = new XMLHttpRequest();
 
   function handler() {
@@ -56,23 +56,6 @@ function printFilterArticles(skip = 0, top = 9) {
   }
 
   xhrArticles.addEventListener('load', handler);
-  /* if (FILTER_CONFIG) {
-     xhrArticles.open(
-      'GET',
-      '/getNewsFilter?' +
-        `skip=${skip}&top=${top}` +
-        '&filter=true' +
-        `&author=${FILTER_CONFIG.author}` +
-        `&dateBegin=${FILTER_CONFIG.dateBegin}&dateEnd=${FILTER_CONFIG.dateEnd}` +
-        `&tags=${FILTER_CONFIG.tags.join(',')}`,
-      true);
-  } else {
-    xhrArticles.open(
-      'GET',
-      `/getNewsFilter?skip=${skip}&top=${top}&filter=false`,
-      true,
-    );
-  }*/
   FILTER_CONFIG.skip = skip;
   FILTER_CONFIG.top = top;
   const jsonFILTER = JSON.stringify(FILTER_CONFIG);

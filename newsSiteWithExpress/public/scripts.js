@@ -7,7 +7,7 @@
 
 let USER = null;
 
-let FILTER_CONFIG = null;
+let FILTER_CONFIG = {};
 let INDEX_THIS_PAGE = 1;
 let ARTICLE_AMOUNT;
 

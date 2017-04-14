@@ -4,6 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 
 const ArticleService = require('./private/articleService.js');
+
 const dataWorker = require('./private/dataBasesWork.js');
 
 app.use(express.static(`${__dirname}/public`));
@@ -15,8 +16,8 @@ app.get('/firstNews', (req, res) => {
   res.json(ArticleService.findArticles());
 });
 
-app.get('/articleLength', (req, res) => {
-  res.end(String(ArticleService.articleLength));
+app.get('/articlesLength', (req, res) => {
+  res.end(String(ArticleService.findArticlesLength()));
 });
 
 app.post('/postNewsFilter', (req, res) => {

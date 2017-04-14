@@ -36,6 +36,7 @@ function unLogInUser() {
 }
 
 function NewsView() {
+
   function oneNews(article) {
     const divMain = DOC.createElement('div');
     const divTags = DOC.createElement('div');
