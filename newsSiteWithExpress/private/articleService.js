@@ -44,7 +44,7 @@ const articleService = (function () {
       authorBucket = db.authorsIndex.save(authorBucket);
     },
     [false](id, author) {
-      const authorBucket = db.authorsIndex.findOne({ author }); // authorsIndex[author];
+      const authorBucket = db.authorsIndex.findOne({ author });
       if (!authorBucket || !authorBucket.ids.length) return;
       authorBucket.id = authorBucket._id;
       removeArticleId(id, authorBucket, 'authorsIndex');
@@ -114,14 +114,28 @@ const articleService = (function () {
   }
 
   function createArticle(article) {
-    const newArticle = toDiskdb(article);
-    const id = newArticle._id;
-    newArticle.id = id;
-    orderIndex.push(id);
-    db.orderIndex.save(id);
-    articlesLength += 1;
-    feedTagsIndex(newArticle, true);
-    feedAuthorsIndex(newArticle, true);
+    let id;
+    const promise = new Promise((resolve, reject) => {
+      const newArticle = toDiskdb(article);
+      if (newArticle) {
+        id = newArticle._id;
+        newArticle.id = id;
+        resolve(newArticle);
+      }
+      reject(new Error('diskdb can`t make article'));
+    });
+    promise.then((resolve) => {
+      orderIndex.push(resolve.id);
+      db.orderIndex.save(resolve.id);
+      articlesLength += 1;
+    });
+    promise.then((resolve) => {
+      feedTagsIndex(resolve, true);
+    });
+    promise.then((resolve) => {
+      feedAuthorsIndex(resolve, true);
+    });
+    promise.catch(err => console.log(err));
     return id;
   }
 
@@ -135,12 +149,25 @@ const articleService = (function () {
   }
 
   function deleteArticle(id) {
-    const article = db.articles.findOne({ _id: id });
-    db.articles.remove({ _id: id });
-    article.id = article._id;
-    feedTagsIndex(article, false);
-    feedAuthorsIndex(article, false);
-    removeFromOrderIndex(id);
+    const promise = new Promise((resolve, reject) => {
+      const article = db.articles.findOne({ _id: id });
+      article.id = article._id;
+      if (article) resolve(article);
+      reject(new Error('diskdb can`t find news, maybe news does not exist '));
+    });
+    promise.then(() => {
+      db.articles.remove({ _id: id });
+    });
+    promise.then((resolve) => {
+      feedTagsIndex(resolve, false);
+    });
+    promise.then((resolve) => {
+      feedAuthorsIndex(resolve, false);
+    });
+    promise.then(() => {
+      removeFromOrderIndex(id);
+    });
+    promise.catch(err => console.log(err));
   }
 
   function readArticle(id) {
@@ -151,25 +178,37 @@ const articleService = (function () {
   }
 
   function replaceDataOfArticle(newArticle) {
-    const id = newArticle.id;
-    const query = { _id: id };
-    const dataToBeUpdate = {};
-    if (newArticle.title) dataToBeUpdate.title = newArticle.title;
-    if (newArticle.summary) dataToBeUpdate.summary = newArticle.summary;
-    if (newArticle.content) dataToBeUpdate.content = newArticle.content;
-    if (newArticle.tags && newArticle.tags.length) {
-      dataToBeUpdate.tags = newArticle.tags;
-    }
-    db.articles.update(query, dataToBeUpdate);
+    const promise = new Promise((resolve) => {
+      const dataToBeUpdate = {};
+      if (newArticle.title) dataToBeUpdate.title = newArticle.title;
+      if (newArticle.summary) dataToBeUpdate.summary = newArticle.summary;
+      if (newArticle.content) dataToBeUpdate.content = newArticle.content;
+      if (newArticle.tags && newArticle.tags.length) {
+        dataToBeUpdate.tags = newArticle.tags;
+      }
+      resolve(dataToBeUpdate);
+    });
+    promise.then((resolve) => {
+      const id = newArticle.id;
+      const query = { _id: id };
+      db.articles.update(query, resolve);
+    });
   }
 
   function updateArticle(article) {
-    const id = article.id;
-    const oldArticle = db.articles.findOne({ _id: id }); // articles[id];
-    if (article.tags && article.tags.length) {
-      feedTagsIndex(oldArticle, false);
-      feedTagsIndex(article, true);
-    }
+    const promise = new Promise((resolve, reject) => {
+      const id = article.id;
+      const oldArticle = db.articles.findOne({ _id: id });
+      if (oldArticle) resolve(oldArticle);
+      reject(new Error('diskdb can`t find article'));
+    });
+    promise.then((resolve) => {
+      if (article.tags && article.tags.length) {
+        feedTagsIndex(resolve, false);
+        feedTagsIndex(article, true);
+      }
+    });
+    promise.catch(err => console.log(err));
     replaceDataOfArticle(article);
   }
 
