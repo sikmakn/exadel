@@ -309,8 +309,9 @@ function clickAddNews() {
     .dispatchEvent(new Event('click', { bubbles: true }));
 }
 
-const logOffButton = DOC.getElementById('log-off-button');
-logOffButton.onclick = () => {
+const logOutButton = DOC.getElementById('log-off-button');
+logOutButton.onclick = () => {
+  logOutServer();
   USER = null;
   unLogInUser();
   NEWS_VIEW.removeAllNews();

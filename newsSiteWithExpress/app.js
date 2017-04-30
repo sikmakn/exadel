@@ -3,51 +3,25 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 
-const ArticleService = require('./private/articleService.js');
-
-const dataWorker = require('./private/dataBasesWork.js');
-
 app.use(express.static(`${__dirname}/public`));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get('/firstNews', (req, res) => {
-  res.json(ArticleService.findArticles());
-});
+// create passport
+const passport = require('passport');
+const expressSession = require('express-session');
 
-app.get('/articlesLength', (req, res) => {
-  res.end(String(ArticleService.findArticlesLength()));
-});
+app.use(expressSession({ secret: 'usersKey' }));
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.post('/postNewsFilter', (req, res) => {
-  if (req.body.dateBegin) req.body.dateBegin = new Date(req.body.dateBegin);
-  if (req.body.dateEnd) req.body.dateEnd = new Date(req.body.dateEnd);
-  const articles = ArticleService.findArticles(
-    req.body.skip,
-    req.body.top,
-    req.body);
-  res.json(articles);
-});
+const initPassport = require('./private/passportWork/initPassport.js');
 
-app.delete('/deleteNews', (req, res) => {
-  ArticleService.deleteArticle(req.query.id);
-  res.end();
-});
+initPassport(passport);
+//
+const httpRequests = require('./httpRequests');
 
-app.post('/addNews', (req, res) => {
-  req.body.createdAt = new Date(req.body.createdAt);
-  const id = ArticleService.createArticle(req.body);
-  res.end(id);
-});
-
-app.patch('/editNews', (req, res) => {
-  ArticleService.updateArticle(req.body);
-  res.end();
-});
-
-app.get('/login', (req, res) => {
-  res.end(dataWorker.findUserOrRegister(req.query.name, req.query.password));
-});
+httpRequests(app, passport);
 
 app.listen(3000);

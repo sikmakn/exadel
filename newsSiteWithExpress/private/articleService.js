@@ -114,16 +114,16 @@ const articleService = (function () {
   }
 
   function createArticle(article) {
-    let id;
     const promise = new Promise((resolve, reject) => {
       const newArticle = toDiskdb(article);
       if (newArticle) {
-        id = newArticle._id;
+        const id = newArticle._id;
         newArticle.id = id;
         resolve(newArticle);
       }
       reject(new Error('diskdb can`t make article'));
     });
+
     promise.then((resolve) => {
       orderIndex.push(resolve.id);
       db.orderIndex.save(resolve.id);
@@ -135,8 +135,11 @@ const articleService = (function () {
     promise.then((resolve) => {
       feedAuthorsIndex(resolve, true);
     });
-    promise.catch(err => console.log(err));
-    return id;
+    promise.catch((err) => {
+      console.log(err);
+      throw new Error(err);
+    });
+    return promise.then(newArticle => newArticle.id);
   }
 
   function removeFromOrderIndex(id) {
@@ -167,7 +170,10 @@ const articleService = (function () {
     promise.then(() => {
       removeFromOrderIndex(id);
     });
-    promise.catch(err => console.log(err));
+    promise.catch((err) => {
+      console.log(err);
+      throw new Error(err);
+    });
   }
 
   function readArticle(id) {
@@ -208,7 +214,10 @@ const articleService = (function () {
         feedTagsIndex(article, true);
       }
     });
-    promise.catch(err => console.log(err));
+    promise.catch((err) => {
+      console.log(err);
+      throw new Error(err);
+    });
     replaceDataOfArticle(article);
   }
 
@@ -260,17 +269,30 @@ const articleService = (function () {
   }
 
   function findArticles(skip = 0, top = 10, filter = {}) {
-    let ids = filterByTags(filter.tags) || orderIndex;
-    if (filter.author) {
-      const idsAuthor = filterByAuthor(filter.author);
-      ids = sameElements(ids, idsAuthor);
-    }
-    let articlesArr = transformIdsToArticles(ids);
-    articlesArr.sort((a, b) => b.createdAt - a.createdAt);
-    articlesArr = filterByTime(articlesArr, filter.dateBegin, filter.dateEnd);
-    articlesLength = articlesArr.length;
-    articlesArr = articlesArr.splice(skip, top);
-    return articlesArr;
+    const promise = new Promise((resolve) => {
+      const ids = filterByTags(filter.tags) || orderIndex;
+      resolve(ids);
+    })
+      .then((ids) => {
+        if (filter.author) {
+          const idsAuthor = filterByAuthor(filter.author);
+          ids = sameElements(ids, idsAuthor);
+        }
+        return ids;
+      })
+      .then(ids => transformIdsToArticles(ids))
+      .then((articlesArr) => {
+        articlesArr.sort((a, b) => b.createdAt - a.createdAt);
+        articlesArr = filterByTime(
+          articlesArr,
+          filter.dateBegin,
+          filter.dateEnd);
+        articlesLength = articlesArr.length;
+        articlesArr = articlesArr.splice(skip, top);
+        return articlesArr;
+      });
+
+    return promise;
   }
 
   function findArticlesLength() {

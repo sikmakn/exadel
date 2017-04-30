@@ -4,7 +4,7 @@
 
 const DiskDB = require('diskdb');
 
-const db = DiskDB.connect(`${__dirname}/db`, ['users']);
+const db = DiskDB.connect('./private/db', ['users']);
 
 function UserInformation(login, password) {
   this.login = login;
@@ -25,3 +25,5 @@ function findUserOrRegister(name, password) {
 }
 
 exports.findUserOrRegister = findUserOrRegister;
+exports.usersDB = db.users;
+exports.UserInformation = UserInformation;
