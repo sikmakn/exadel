@@ -1,5 +1,9 @@
 const DOC = document;
 
+window.onbeforeunload = () => {
+  logOutServer();
+};
+
 function onresizePagination() {
   NEWS_VIEW.createPagination(INDEX_THIS_PAGE);
   if (window.innerWidth <= 500) return;
@@ -353,7 +357,8 @@ logInButton.onclick = () => {
   const inputLoginButton = DOC.createElement('button');
 
   logInArea.id = 'log-in-area';
-  title.innerHTML = 'Введите логин и пароль, если вы не зарегестрированы,' +
+  title.innerHTML =
+    'Введите логин и пароль, если вы не зарегестрированы,' +
     ' то это произойдет автоматически.';
   pLogin.innerHTML = 'Логин:';
   pPassword.innerHTML = 'Пароль';
