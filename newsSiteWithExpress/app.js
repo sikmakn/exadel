@@ -11,12 +11,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // create passport
 const passport = require('passport');
 const expressSession = require('express-session');
-const sessionStoreDiskdb = require('./private/sessionStoreDiskdb')(expressSession);
+const SessionStoreDiskdb = require('./private/myStoreSession')(expressSession);
 
 app.use(
   expressSession({
     secret: 'usersKey',
-    store: sessionStoreDiskdb,
+    store: new SessionStoreDiskdb({ collection: 'store' }),
   }));
 app.use(passport.initialize());
 app.use(passport.session());

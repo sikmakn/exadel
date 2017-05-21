@@ -4,8 +4,10 @@ const usersDB = require('./private/passportWork/usersDB').usersDB;
 module.exports = (app, passport) => {
   app.get('/firstNews', (req, res) => {
     ArticleService.findArticles()
-      .then(articlesArr => res.json(articlesArr))
-      .catch(err => err.end(err));
+      .then(function (articlesArr) {
+        res.json(articlesArr);
+      })
+      .catch(err => res.end(err));
   });
 
   app.get('/articlesLength', (req, res) => {
