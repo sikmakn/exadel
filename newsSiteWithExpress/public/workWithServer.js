@@ -25,6 +25,14 @@ function printArticles() {
         if (key === 'createdAt') return new Date(value);
         return value;
       });
+      return firstArticles;
+    }).then((firstArticles) => {
+      firstArticles = firstArticles.map((article) => {
+        article.id = article._id;
+        return article;
+      });
+      return firstArticles;
+    }).then((firstArticles) => {
       NEWS_VIEW.printNewsList(firstArticles);
       printPagination();
     })
@@ -93,7 +101,7 @@ function addNewsOnServer(article) {
 
   addNewsOnServerPromise
     .then((response) => {
-      const id = response;
+      const id = JSON.parse(response);
       const news = DOC.getElementById('temporary');
       news.id = id;
       const addButton = DOC.getElementById('add-news-button');

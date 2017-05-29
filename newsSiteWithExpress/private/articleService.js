@@ -11,44 +11,114 @@ const articleService = (function () {
     'authorsIndex',
   ]);
 
+  const ArticleCollection = require('./createDB.js').ArticleCollection;
+  const AuthorsIndexCollection = require('./createDB.js')
+    .AuthorsIndexCollection;
+  const TagsIndexCollection = require('./createDB.js').TagsIndexCollection;
+  const MongoClient = require('mongodb').MongoClient;
+
   // private first
-  const orderIndex = db.orderIndex.find();
+  let orderIndex;// = db.orderIndex.find();
 
-  let articlesLength = orderIndex.length;
+  let articlesLength;// = orderIndex.length;
 
-  function removeArticleId(id, articleIds, itemArr) {
-    const index = articleIds.ids.indexOf(id);
+  MongoClient.connect('mongodb://localhost/myStore')
+  .then((db) => {
+    const usersCollection = db.collection('orderIndex');
+    usersCollection.find().nextObject((err, ordInd) => {
+      if (err) throw new Error(err);
+      if (ordInd) {
+        orderIndex = ordInd.order;
+        articlesLength = orderIndex.length;
+      } else {
+        orderIndex = [];
+        articlesLength = 0;
+      }
+      db.close();
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+    throw new Error(err);
+  });
+  /*function removeArticleId(id, articleIds, itemArr) {
+    id._id = id.toString();
+    let index;
+    articleIds.ids.forEach((elem, i) => {
+      if (elem === id._id) index = i;
+    });
     articleIds.ids.splice(index, 1);
     db[itemArr].update({ _id: articleIds.id }, { ids: articleIds.ids });
-  }
+  }*/
 
-  function firstInSecond(item, itemArr, key) {
-    return db[itemArr].findOne({ [key]: item });
+  function isAuthorBucket(authorBucket, id) {
+    authorBucket.ids.push(id);
+    AuthorsIndexCollection.update(
+      { _id: authorBucket._id },
+      { ids: authorBucket.ids }
+    )
+      .then((n) => {
+        console.log(n);
+      })
+      .catch((err) => {
+        throw new Error(err);
+      });
   }
 
   const feedAuthorActionHash = {
     [true](id, author) {
-      let authorBucket = firstInSecond(author, 'authorsIndex', 'author');
-      if (authorBucket) {
-        authorBucket.ids.push(id);
-        db.authorsIndex.update(
-          { _id: authorBucket._id },
-          { ids: authorBucket.ids });
-        return;
-      }
-      authorBucket = {
-        author,
-        ids: [],
-      };
-      authorBucket.ids.push(id);
-      authorBucket = db.authorsIndex.save(authorBucket);
+      AuthorsIndexCollection.findByAuthor(author).then((authorBucket) => {
+        authorBucket = authorBucket[0];
+        if (authorBucket) {
+          isAuthorBucket(authorBucket, id);
+          return;
+        }
+        id._id = id.toString();
+        authorBucket = new AuthorsIndexCollection({
+          author,
+          ids: [id],
+        });
+        authorBucket.save().then((n) => {
+          console.log(n);
+        });
+      });
     },
     [false](id, author) {
-      const authorBucket = db.authorsIndex.findOne({ author });
-      if (!authorBucket || !authorBucket.ids.length) return;
-      authorBucket.id = authorBucket._id;
-      removeArticleId(id, authorBucket, 'authorsIndex');
-      if (!authorBucket.ids.length) db.authorsIndex.remove({ author });
+      // const authorBucket = db.authorsIndex.findOne({ author });
+      AuthorsIndexCollection.findByAuthor(author)
+        .then((authorBucket) => {
+          authorBucket = authorBucket[0]._doc;
+          if (!(!authorBucket || !authorBucket.ids.length)) {
+            // removeArticleId(id, authorBucket, 'authorsIndex');
+            let index;
+            authorBucket.ids.forEach((elem, i) => {
+              if (elem.toString() === id.toString()) index = i;
+            });
+            //const index = authorBucket.ids.indexOf(id);
+            authorBucket.ids.splice(index, 1);
+            if (authorBucket.ids.length) {
+              AuthorsIndexCollection.update(
+                { _id: authorBucket._id },
+                { ids: authorBucket.ids }
+              ).then((n) => {
+                console.log(n);
+              });
+            } else {
+              AuthorsIndexCollection.findByAuthor(author)
+                .remove()
+                .then((n) => {
+                  console.log(n);
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }
+          }
+          // if (!authorBucket.ids.length) db.authorsIndex.remove({ author });
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
     },
   };
 
@@ -61,25 +131,74 @@ const articleService = (function () {
     actionFunction(id, author);
   }
 
-  function createTagBucket(tagKey) {
-    let tagBucket = firstInSecond(tagKey, 'tagsIndex', 'tagKey');
+  /* function createTagBucket(tagKey) {
+    let tagBucket = db.tagsIndex.findOne({ tagKey });
     if (tagBucket) return tagBucket;
     tagBucket = {
       tagKey,
       ids: [],
     };
     return db.tagsIndex.save(tagBucket);
+  }*/
+  function updateTagBucket(tagBucket, id) {
+    tagBucket = tagBucket._doc;
+    const doubling = tagBucket.ids.some((idEl) => { 
+      return idEl.toString() === id;
+    });
+    if (doubling) {
+      return;
+    }
+    tagBucket.ids.push(id);
+    TagsIndexCollection.update(
+      { _id: tagBucket._id },
+      { ids: tagBucket.ids }
+    )
+      .then((n) => {
+        console.log(n);
+      })
+      .catch((err) => {
+        console.log(err);
+        throw new Error(err);
+      });
   }
 
   const feedActionHash = {
     [true](id, tags) {
-      tags.map(tagKey => createTagBucket(tagKey)).forEach((tag) => {
+      /* tags.map(tagKey => createTagBucket(tagKey)).forEach((tag) => {
         tag.ids.push(id);
         db.tagsIndex.update({ _id: tag._id }, { ids: tag.ids });
-      });
+      });*/
+      TagsIndexCollection.findByTagKey({
+        tagKey: { $in: tags },
+      })
+        .then((tagBuckets) => { 
+          tags.forEach((tagKey) => {
+            let tagBucket = tagBuckets.filter((tagBuck) => {
+              return tagBuck._doc.tagKey === tagKey;
+            });
+            tagBucket = tagBucket[0];
+            if (!tagBucket) {
+              tagBucket = new TagsIndexCollection({
+                tagKey,
+                ids: [],
+              });
+              tagBucket.save()
+                  .then((savedBuck) => {
+                    console.log(savedBuck);
+                  }).catch((err) => {
+                    throw new Error(err);
+                  });
+            }
+            updateTagBucket(tagBucket, id);
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          throw new Error(err);
+        });
     },
     [false](id, tags) {
-      tags
+      /* tags
         .map(tagKey => db.tagsIndex.findOne({ tagKey }))
         .forEach((tagBucket) => {
           tagBucket.id = tagBucket._id;
@@ -87,7 +206,40 @@ const articleService = (function () {
           if (!tagBucket.ids.length) {
             db.tagsIndex.remove({ _id: tagBucket._id }, false);
           }
+        });*/
+      TagsIndexCollection.findByTagKey({
+        tagKey: { $in: tags },
+      }).then((tagBuckets) => {
+        tagBuckets.forEach((tagBucket) => {
+          tagBucket = tagBucket._doc;
+          tagBucket.id = tagBucket._id;
+          id._id = id.toString();
+          let index;
+          tagBucket.ids.forEach((elem, i) => {
+            if (elem.toString() === id._id) index = i;
+          });
+          tagBucket.ids.splice(index, 1);
+
+          if (tagBucket.ids.length) {
+            TagsIndexCollection.update(
+              { _id: tagBucket.id },
+              { ids: tagBucket.ids }
+            )
+            .then((n) => {
+              console.log(n);
+            })
+            .catch((err) => {
+              console.log(err);
+              throw new Error(err);
+            });
+          } else {
+            TagsIndexCollection.findByTagKey({ tagKey: tagBucket.tagKey }).remove()
+            .then((n) => {
+              console.log(n);
+            });
+          }
         });
+      });
     },
   };
 
@@ -101,33 +253,67 @@ const articleService = (function () {
     actionFunction(id, tags);
   }
 
-  function toDiskdb(obj) {
-    const article = {
+  /* function toDiskdb(obj) {
+
+     const article = {
       title: obj.title,
       summary: obj.summary,
       createdAt: obj.createdAt,
       author: obj.author,
       content: obj.content,
-      tags: obj.tags,
+      tags: obj.tags
     };
     return db.articles.save(article);
-  }
+}*/
 
   function createArticle(article) {
-    const promise = new Promise((resolve, reject) => {
-      const newArticle = toDiskdb(article);
+    const articleForColl = new ArticleCollection({
+      title: article.title,
+      summary: article.summary,
+      createdAt: article.createdAt,
+      author: article.author,
+      content: article.content,
+      tags: article.tags,
+    });
+    const promise = articleForColl
+      .save()
+      .then((newArticle) => {
+        newArticle = newArticle._doc;
+        const id = newArticle._id;
+        newArticle.id = id;
+        return newArticle;
+      })
+      .catch((err) => {
+        throw new Error(err);
+      });
+    /* const newArticle = toDiskdb(article);
       if (newArticle) {
         const id = newArticle._id;
         newArticle.id = id;
         resolve(newArticle);
       }
-      reject(new Error('diskdb can`t make article'));
-    });
-
+      reject(new Error('diskdb can`t make article'));*/
     promise.then((resolve) => {
       orderIndex.push(resolve.id);
-      db.orderIndex.save(resolve.id);
-      articlesLength += 1;
+      //db.orderIndex.save(resolve.id);
+       MongoClient.connect('mongodb://localhost/myStore')
+       .then((db) => {
+         const orderCollection = db.collection('orderIndex');
+         if (articlesLength) {
+           orderCollection.update({}, { order: orderIndex })
+           .then((n) => {
+             console.log(n);
+           });
+         } else {
+           orderCollection.insertOne({ order: orderIndex });
+         }
+         articlesLength += 1;
+         db.close();
+       })
+        .catch((err) => {
+          console.log(err);
+          throw new Error(err);
+        });
     });
     promise.then((resolve) => {
       feedTagsIndex(resolve, true);
@@ -143,32 +329,61 @@ const articleService = (function () {
   }
 
   function removeFromOrderIndex(id) {
-    const index = orderIndex.indexOf(id);
+    let index = -1;
+    orderIndex.forEach((elem, i) => {
+      if (elem.toString === id.toString) index = i;
+    });
     orderIndex.splice(index, 1);
-    db.orderIndex.remove();
+    /*db.orderIndex.remove();
     db.connect(`${__dirname}/db`, ['orderIndex']);
-    db.orderIndex.save(orderIndex);
+    db.orderIndex.save(orderIndex);*/
+    MongoClient.connect('mongodb://localhost/myStore')
+       .then((db) => {
+         const orderCollection = db.collection('orderIndex');
+         orderCollection.update({}, { order: orderIndex })
+           .then((n) => {
+             console.log(n);
+           });
+         db.close();
+       })
+        .catch((err) => {
+          console.log(err);
+          throw new Error(err);
+        });
+
     articlesLength -= 1;
   }
 
   function deleteArticle(id) {
-    const promise = new Promise((resolve, reject) => {
-      const article = db.articles.findOne({ _id: id });
+    const promise = ArticleCollection.findById(id).then((articles) => {
+      ArticleCollection.findById(id)
+        .remove()
+        .then((n) => {
+          console.log(n);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      const article = articles[0]._doc;
+      article.id = article._id;
+      if (article) return article;
+      throw new Error('diskdb can`t find news, maybe news does not exist ');
+    });
+    /* const article = db.articles.findOne({ _id: id });
       article.id = article._id;
       if (article) resolve(article);
-      reject(new Error('diskdb can`t find news, maybe news does not exist '));
-    });
-    promise.then(() => {
+      reject(new Error("diskdb can`t find news, maybe news does not exist "));*/
+    /* promise.then(() => {
       db.articles.remove({ _id: id });
-    });
+    });*/
     promise.then((resolve) => {
       feedTagsIndex(resolve, false);
     });
     promise.then((resolve) => {
       feedAuthorsIndex(resolve, false);
     });
-    promise.then(() => {
-      removeFromOrderIndex(id);
+    promise.then((resolve) => {
+      removeFromOrderIndex(resolve._id);
     });
     promise.catch((err) => {
       console.log(err);
@@ -180,7 +395,8 @@ const articleService = (function () {
     if (!id) {
       throw new Error('please provide id');
     }
-    return db.articles.findOne({ _id: id });
+    // return db.articles.findOne({ _id: id });
+    return ArticleCollection.findById(id).exec();
   }
 
   function replaceDataOfArticle(newArticle) {
@@ -197,16 +413,33 @@ const articleService = (function () {
     promise.then((resolve) => {
       const id = newArticle.id;
       const query = { _id: id };
-      db.articles.update(query, resolve);
+      // db.articles.update(query, resolve);
+      ArticleCollection.update(query, resolve)
+        .then((n) => {
+          console.log(n);
+        })
+        .catch((err) => {
+          console.log(err);
+          throw new Error(err);
+        });
     });
   }
 
   function updateArticle(article) {
     const promise = new Promise((resolve, reject) => {
-      const id = article.id;
+      /* const id = article.id;
       const oldArticle = db.articles.findOne({ _id: id });
       if (oldArticle) resolve(oldArticle);
-      reject(new Error('diskdb can`t find article'));
+      reject(new Error('diskdb can`t find article'));*/
+
+      ArticleCollection.findById(article.id)
+        .then((oldArticle) => {
+          if (oldArticle) resolve(oldArticle);
+          reject(new Error('diskdb can`t find article'));
+        })
+        .catch((err) => {
+          reject(new Error('diskdb can`t find article'));
+        });
     });
     promise.then((resolve) => {
       if (article.tags && article.tags.length) {
@@ -229,9 +462,13 @@ const articleService = (function () {
 
   function filterByTags(tags) {
     let ids;
-    if (!tags || !tags[0].length) return ids;
+    if (!tags || !tags[0].length) { 
+      return new Promise((resolve) => {
+        resolve(orderIndex);
+      });
+    }
 
-    const idsMatrix = tags.map((tag) => {
+    /*const idsMatrix = tags.map((tag) => {
       const tagBucket = db.tagsIndex.findOne({ tagKey: tag });
       if (tagBucket) return tagBucket.ids;
       return [];
@@ -240,13 +477,30 @@ const articleService = (function () {
     idsMatrix.forEach((idsTag) => {
       ids = sameElements(ids, idsTag);
     });
-    return ids;
+    return ids;*/
+
+    return TagsIndexCollection.findByTagKey({ tagKey: { $in: tags } })
+    .then((tagBuckets) => {
+      const idsMatrix = tagBuckets.map((tagBucket) => {
+        if (tagBucket) return tagBucket.ids;
+        return [];
+      });
+      ids = idsMatrix[0];
+      idsMatrix.forEach((idsTag) => {
+        ids = sameElements(ids, idsTag);
+      });
+      return ids;
+    })
+    .catch((err) => {
+      console.log(err);
+      throw new Error(err);
+    });
   }
 
-  function filterByAuthor(author) {
+  /* function filterByAuthor(author) {
     const ids = db.authorsIndex.findOne({ author }).ids || orderIndex;
     return ids;
-  }
+  }*/
 
   function filterByTime(articleArr, dateBegin, dateEnd) {
     if (!dateEnd && dateBegin !== 0 && !dateBegin) return articleArr;
@@ -259,40 +513,86 @@ const articleService = (function () {
     });
   }
 
-  function transformIdsToArticles(ids) {
-    return ids.map((id) => {
+  /* function transformIdsToArticles(ids) {
+     return ids.map((id) => {
       const article = db.articles.findOne({ _id: id });
       article.id = article._id;
       article.createdAt = new Date(article.createdAt);
       return article;
     });
-  }
-
-  function findArticles(skip = 0, top = 10, filter = {}) {
-    const promise = new Promise((resolve) => {
-      const ids = filterByTags(filter.tags) || orderIndex;
-      resolve(ids);
-    })
-      .then((ids) => {
-        if (filter.author) {
-          const idsAuthor = filterByAuthor(filter.author);
-          ids = sameElements(ids, idsAuthor);
-        }
-        return ids;
-      })
-      .then(ids => transformIdsToArticles(ids))
-      .then((articlesArr) => {
+  }*/
+  function outputArticles(resolve, ids, filter, skip, top) {
+    ids.then((idsArr) => {
+      ArticleCollection.find({
+        _id: { $in: idsArr },
+      }).then((articlesArr) => {
         articlesArr.sort((a, b) => b.createdAt - a.createdAt);
-        articlesArr = filterByTime(
-          articlesArr,
-          filter.dateBegin,
-          filter.dateEnd);
+        articlesArr = filterByTime(articlesArr, filter.dateBegin, filter.dateEnd);
         articlesLength = articlesArr.length;
         articlesArr = articlesArr.splice(skip, top);
-        return articlesArr;
-      });
+        resolve(articlesArr);
+      })
+    .catch((err) => {
+      console.log(err);
+      throw new Error(err);
+    });
+    });
+  }
+  function findArticles(skip = 0, top = 10, filter = {}) {
+    const promise = new Promise((resolve, reject) => {
+      const ids = filterByTags(filter.tags);// || orderIndex;
+      if (filter.author) {
+        ids.then((idsArr) => {
+          AuthorsIndexCollection.findByAuthor(filter.author)
+          .then((idsAuthor) => {
+            idsAuthor = idsAuthor[0]._doc.ids;
+            idsAuthor = idsAuthor.filter((item) => {
+              let flag = false;
+              idsArr.forEach((item2) => {
+                if (item.toString() === item2.toString()) flag = true;
+              });
+              return flag;
+            });
+           // idsArr = sameElements(idsArr, idsAuthor);
 
+            outputArticles(resolve, new Promise(res => res(idsAuthor)), filter, skip, top);
+          }).catch((err) => { console.log(err); });
+        }).catch(err => reject(err));
+      } else {
+      outputArticles(resolve, ids, filter, skip, top);
+      }
+    });
     return promise;
+/*    if (filter.author) {
+      // const idsAuthor = filterByAuthor(filter.author);
+      return AuthorsIndexCollection.findByAuthor({ author: filter.author })
+        .then((idsAuthor) => {
+          ids = sameElements(ids, idsAuthor);
+          return ArticleCollection.find({
+            _id: { $in: ids },
+          }).then((articlesArr) => {
+            articlesArr.sort((a, b) => b.createdAt - a.createdAt);
+            articlesArr = filterByTime(articlesArr, filter.dateBegin, filter.dateEnd);
+            articlesLength = articlesArr.length;
+            articlesArr = articlesArr.splice(skip, top);
+            return articlesArr;
+          });
+        })
+        .catch((err) => {
+          throw new Error(err);
+        });
+    }
+    // let articlesArr = transformIdsToArticles(ids);
+
+    return ArticleCollection.find({
+      _id: { $in: ids },
+    }).then((articlesArr) => {
+      articlesArr.sort((a, b) => b.createdAt - a.createdAt);
+      articlesArr = filterByTime(articlesArr, filter.dateBegin, filter.dateEnd);
+      articlesLength = articlesArr.length;
+      articlesArr = articlesArr.splice(skip, top);
+      return articlesArr;
+    });*/
   }
 
   function findArticlesLength() {

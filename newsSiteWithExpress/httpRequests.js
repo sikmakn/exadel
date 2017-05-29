@@ -1,10 +1,10 @@
 const ArticleService = require('./private/articleService.js');
-const usersDB = require('./private/passportWork/usersDB').usersDB;
+const MongoClient = require('mongodb').MongoClient;
 
 module.exports = (app, passport) => {
   app.get('/firstNews', (req, res) => {
     ArticleService.findArticles()
-      .then(function (articlesArr) {
+      .then((articlesArr) => {
         res.json(articlesArr);
       })
       .catch(err => res.end(err));
@@ -33,12 +33,25 @@ module.exports = (app, passport) => {
     req.body.createdAt = new Date(req.body.createdAt);
     if (!req.session.user) {
       res.status(500).json(new Error('You not login'));
-    } else {
-      req.body.author = usersDB.findOne({ _id: req.session.user }).login;
-      ArticleService.createArticle(req.body)
-        .then(id => res.end(id))
-        .catch(err => res.status(500).json(err));
+      return;
     }
+    MongoClient.connect('mongodb://localhost/myStore')
+    .then((db) => {
+      const usersCollection = db.collection('users');
+      usersCollection
+        .find({ username: req.session.user })
+        .nextObject((err, user) => {
+          if (err) res.status(500).json(err);
+          req.body.author = user.username;
+          ArticleService.createArticle(req.body)
+            .then((id) => {
+              res.json(id);
+            })
+            .catch(error => res.status(500).json(error));
+        });
+    }).catch((err) => {
+      res.status(500).json(err);
+    });
   });
 
   app.patch('/editNews', (req, res) => {
