@@ -1,0 +1,4 @@
+{"_id":{"$oid":"592be15c456d511bd4155846"},"title":"mЗаголовок","summary":"краткое описаниеm","author":"r","content":"Полный текст новостиm","tags":["m"],"createdAt":{"$date":"2017-05-29T08:52:38.195Z"},"__v":0}
+{"_id":{"$oid":"592be2e0329c450d14afe556"},"title":"mmЗаголовок","summary":"краткое описаниеnmmm","author":"r","content":"Полный текст новостиnmm","tags":["m2","m3"],"createdAt":{"$date":"2017-05-29T08:58:59.430Z"},"__v":0}
+{"_id":{"$oid":"592be7362fe4cf15781a5dc5"},"title":"!!!Заголовок","summary":"краткое описание!!!","author":"r","content":"Полный текст новости!!!","tags":["tag1"],"createdAt":{"$date":"2017-05-29T09:17:42.323Z"},"__v":0}
+{"_id":{"$oid":"592be7972fe4cf15781a5dc8"},"title":"nnЗаголовок","summary":"краткое описаниеnnn","author":"admin","content":"Полный текст новостиnnn","tags":["tag1","tag2"],"createdAt":{"$date":"2017-05-29T09:19:19.706Z"},"__v":0}
